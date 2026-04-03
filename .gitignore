@@ -1,0 +1,79 @@
+#######################################
+# 🚀 ASP.NET / .NET
+#######################################
+
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VSCode / VS
+.vs/
+.vscode/
+.idea/
+
+# 发布文件
+publish/
+*.publishproj
+
+# 日志
+*.log
+
+# 环境变量
+.env
+.env.*
+
+#######################################
+# 🔐 HTTPS / 证书（你这个项目很关键）
+#######################################
+
+# ASP.NET dev certificates
+**/*.pfx
+**/*.pem
+**/*.key
+
+# 本地 HTTPS 证书目录
+**/ASP.NET/https/
+
+#######################################
+# ⚛️ React / Node / Vite
+#######################################
+
+# 依赖
+node_modules/
+
+# 构建输出
+dist/
+build/
+
+# 缓存
+.cache/
+.vite/
+*.tsbuildinfo
+
+# 日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+#######################################
+# 🧪 测试
+#######################################
+
+coverage/
+*.coverage
+
+#######################################
+# 🖼️ 可选（按需）
+#######################################
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+*.temp

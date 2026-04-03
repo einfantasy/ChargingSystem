@@ -1,0 +1,6 @@
+@ChargingSystem.Server_HostAddress = http://localhost:5126
+
+GET {{ChargingSystem.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

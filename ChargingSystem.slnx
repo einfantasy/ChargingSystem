@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="chargingsystem.client/chargingsystem.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="ChargingSystem.Server/ChargingSystem.Server.csproj" />
+</Solution>
