@@ -52,6 +52,11 @@ export default defineConfig({
             '^/weatherforecast': {
                 target,
                 secure: false
+            },
+            '^/api': {
+                target,
+                secure: false,
+                changeOrigin: true // 建议加上，避免某些 CORS 问题
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '51137'),

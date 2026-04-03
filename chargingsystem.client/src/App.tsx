@@ -1,58 +1,57 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
+import { Login } from './Login';
+import { Home } from './Home';
 
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
+// 定义用户信息接口
+interface User {
+    username: string;
+    token: string;
 }
 
 function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
+    const [user, setUser] = useState<User | null>(null);
+    const [isChecking, setIsChecking] = useState(true);
 
     useEffect(() => {
-        populateWeatherData();
+        // 检查本地是否有缓存的登录状态
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+            setUser(JSON.parse(savedUser));
+        }
+        setIsChecking(false);
     }, []);
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
+    const handleLogin = (userData: User) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+    };
+
+    const handleLogout = () => {
+        setUser(null);
+        localStorage.removeItem('user');
+    };
+
+    if (isChecking) return <div>正在加载应用...</div>;
 
     return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
-    );
+        <BrowserRouter>
+            <Routes>
+                {/* 登录页：如果已登录，重定向到首页 */}
+                <Route path="/login" element={
+                    !user ? <Login onLoginSuccess={handleLogin} /> : <Navigate to="/" />
+                } />
 
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        if (response.ok) {
-            const data = await response.json();
-            setForecasts(data);
-        }
-    }
+                {/* 首页：如果未登录，重定向到登录页 */}
+                <Route path="/" element={
+                    user ? <Home user={user} onLogout={handleLogout} /> : <Navigate to="/login" />
+                } />
+
+                {/* 捕获所有其他路径 */}
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
