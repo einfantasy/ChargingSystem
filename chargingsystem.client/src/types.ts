@@ -6,6 +6,7 @@ export interface User {
     token: string;
     // 你可以根据后端 API 的实际返回增加字段
     email?: string; // 问号表示该字段是可选的
+    expiresAt: string;// ISO 字符串日期
 }
 
 // 如果你以后有复杂的 API 返回格式，也可以定义在这里

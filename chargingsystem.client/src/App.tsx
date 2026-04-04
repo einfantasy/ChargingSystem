@@ -35,6 +35,18 @@ function App() {
     const handleLogin = (userData: User) => {
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
+
+        // 计算距离过期的毫秒数
+        const expirationTime = new Date(userData.expiresAt).getTime();
+        const currentTime = new Date().getTime();
+        const delay = expirationTime - currentTime;
+
+        if (delay > 0) {
+            setTimeout(() => {
+                handleLogout();
+                alert("登录已过期，请重新登录");
+            }, delay);
+        }
     };
 
     const handleLogout = () => {

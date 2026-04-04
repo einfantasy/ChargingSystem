@@ -1,4 +1,4 @@
-import React, { useState, type FormEvent } from 'react';
+import React, { useState, type SyntheticEvent } from 'react';
 import type { User } from './types';
 
 interface LoginProps {
@@ -10,7 +10,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
         setError(null);
 

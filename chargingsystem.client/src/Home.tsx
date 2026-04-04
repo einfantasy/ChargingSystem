@@ -45,7 +45,9 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                 <button onClick={onLogout}>退出登录</button>
             </div>
             <p>这是从 ASP.NET 后端获取的受保护数据：</p>
-            {contents}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {contents}     
+            </div>
         </div>
     );
 
