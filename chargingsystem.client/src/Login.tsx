@@ -29,7 +29,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 const msg = await response.text();
                 setError(msg || '登录失败');
             }
-        } catch (err) {
+        } catch {
             setError('无法连接到服务器');
         }
     };

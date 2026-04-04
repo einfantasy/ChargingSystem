@@ -1,25 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
 import { Login } from './Login';
 import { Home } from './Home';
-
-// 定义用户信息接口
-interface User {
-    username: string;
-    token: string;
-}
+import type { User } from './types';
 
 function App() {
-    const [user, setUser] = useState<User | null>(null);
+    //const [user, setUser] = useState<User | null>(null);
     const [isChecking, setIsChecking] = useState(true);
+    const [user, setUser] = useState(() => {
+        // 渲染前就读好数据，一步到位
+        const savedUser = localStorage.getItem('user');
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
 
     useEffect(() => {
-        // 检查本地是否有缓存的登录状态
-        const savedUser = localStorage.getItem('user');
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        setIsChecking(false);
+        const verifyUser = async () => {
+            const savedUser = localStorage.getItem('user');
+            if (savedUser) {
+                try {
+                    // 模拟异步请求
+                    // await api.verifyToken(JSON.parse(savedUser).token);
+                    setUser(JSON.parse(savedUser));
+                } catch {
+                    localStorage.removeItem('user');
+                }
+            }
+            // 异步操作结束后修改状态，这不会触发警告
+            setIsChecking(false);
+        };
+
+        verifyUser();
     }, []);
 
     const handleLogin = (userData: User) => {

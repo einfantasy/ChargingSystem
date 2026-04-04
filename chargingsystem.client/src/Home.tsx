@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
+import type { Forecast } from './types';
 
 interface HomeProps {
     user: { username: string };
