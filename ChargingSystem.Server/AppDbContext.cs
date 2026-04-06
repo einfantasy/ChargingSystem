@@ -1,11 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-public class AppDbContext : DbContext
+namespace ChargingSystem.Server
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
+    public class AppDbContext : DbContext
     {
-    }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
-    public DbSet<User> Users { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<StudentsBalance>(entity =>
+            {
+                entity.HasNoKey();          // ⭐ 必须：声明为无主键
+                entity.ToView("StudentsBalance"); // ⭐ 指定 View 名
+            });
+        }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<StudentsBalance> StudentsBalanceList { get; set; }
+    }
 }

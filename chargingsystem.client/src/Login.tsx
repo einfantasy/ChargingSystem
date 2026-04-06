@@ -35,7 +35,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800">
             <form
                 onSubmit={handleSubmit}
                 className="w-full max-w-sm p-8 rounded-2xl bg-white/20 backdrop-blur-lg shadow-xl border border-white/30"
@@ -56,7 +56,20 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
-                        className="w-full px-4 py-2 rounded-lg bg-white/80 focus:bg-white outline-none border border-transparent focus:border-indigo-400 transition"
+                        className="w-full px-4 py-2 rounded-lg
+
+    bg-white/5
+    text-white placeholder:text-gray-400
+
+    border border-white/10
+    backdrop-blur-sm
+
+    focus:bg-white/10
+    focus:border-purple-400
+    focus:ring-2 focus:ring-purple-500/40
+
+    outline-none
+    transition-all duration-200"
                     />
                 </div>
 
@@ -68,15 +81,37 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="w-full px-4 py-2 rounded-lg bg-white/80 focus:bg-white outline-none border border-transparent focus:border-indigo-400 transition"
+                        className="w-full px-4 py-2 rounded-lg
+
+    bg-white/5
+    text-white placeholder:text-gray-400
+
+    border border-white/10
+    backdrop-blur-sm
+
+    focus:bg-white/10
+    focus:border-purple-400
+    focus:ring-2 focus:ring-purple-500/40
+
+    outline-none
+    transition-all duration-200"
                     />
                 </div>
 
                 {/* 按钮 */}
                 <button
                     type="submit"
-                    className="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold
-                     hover:bg-indigo-700 active:scale-95 transition transform"
+                    className="
+    w-full py-2 rounded-lg
+    bg-gradient-to-br from-indigo-500/80 to-purple-600/80
+    text-white font-semibold
+    shadow-lg shadow-purple-900/40
+    backdrop-blur-sm
+    hover:from-indigo-400 hover:to-purple-500
+    hover:shadow-purple-700/50
+    active:scale-95
+    transition-all duration-200
+  "
                 >
                     进入系统
                 </button>
