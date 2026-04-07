@@ -23,15 +23,6 @@ export interface Forecast {
     summary: string;
 }
 
-export interface StudentBalance {
-    RowNum: number;
-    student_Id: string;
-    name: string;
-    balance: number;
-    teacher: string;
-    subject: string;
-    hourLeft: number;
-}
 export interface Student {
     student_Id: string;
     name: string;

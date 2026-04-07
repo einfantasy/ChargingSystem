@@ -13,7 +13,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<TeacherService>();
-builder.Services.AddScoped<StudentsBalanceService>();
+builder.Services.AddScoped<RechargeService>();
+builder.Services.AddScoped<ConsumeService>();
+builder.Services.AddScoped<StudentCourse>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
