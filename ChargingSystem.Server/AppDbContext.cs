@@ -19,7 +19,10 @@ namespace ChargingSystem.Server
         }
 
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Recharge> Recharges { get; set; }
+        public DbSet<Consume> Consumes { get; set; }
         public DbSet<StudentsBalance> StudentsBalanceList { get; set; }
     }
 }

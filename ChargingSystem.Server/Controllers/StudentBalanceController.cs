@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChargingSystem.Server.Controllers
 {
@@ -13,6 +14,7 @@ namespace ChargingSystem.Server.Controllers
             _service = service;
         }
 
+        [Authorize]
         [HttpGet("balance")]
         public async Task<IActionResult> GetStudentsBalance()
         {

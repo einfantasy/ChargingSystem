@@ -7,6 +7,8 @@ namespace ChargingSystem.Server
         public Guid Student_Id { get; set; }
         public string Name { get; set; }
         public decimal Balance { get; set; }
+        public string Teacher { get; set; }
+        public string Subject { get; set; }
     }
 
     public class StudentsBalanceService

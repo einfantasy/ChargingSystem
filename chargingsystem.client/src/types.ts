@@ -22,3 +22,15 @@ export interface Forecast {
     temperatureF: number;
     summary: string;
 }
+
+export interface StudentBalance {
+    student_Id: string;
+    name: string;
+    balance: number;
+    teacher: string;
+    subject: string;
+}
+export interface Student {
+    student_Id: string;
+    name: string;
+}
