@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-//import type { Forecast } from './types';
-import type { StudentBalance } from './types';
+import type { Student } from './types';
 import StudentManagePage from "./components/StudentManage";
 
 interface HomeProps {
@@ -17,41 +16,50 @@ interface RecordItem {
     date: string;
 }
 
+function isTokenExpired() {
+    const expiresAt = localStorage.getItem("expiresAt");
+    if (!expiresAt) return true;
+
+    return new Date(expiresAt).getTime() < Date.now();
+}
+
 export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     //const [forecasts, setForecasts] = useState<Forecast[]>();
 
     const [activeMenu, setActiveMenu] = useState("dashboard");
     const [records, setRecords] = useState<RecordItem[]>([]);
+    const [students, setStudents] = useState<Student[]>([]);
 
-    const [studentsBalance, setStudentsBalance] = useState<StudentBalance[]>([]);
+    const fetchStudents = async () => {
+        try {
+            const response = await fetch("/api/student/list", {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setStudents(data);
+            } else {
+                console.error("请求失败:", response.status);
+            }
+        } catch (error) {
+            console.error("网络错误:", error);
+        }
+    }
 
     useEffect(() => {
-        //populateWeatherData();
-        fetchStudentBalance();
-    }, []);
+        const load = async () => {
+            await fetchStudents();
+        };
 
-    //const contents = forecasts === undefined
-    //    ? <p><em>Loading...</em></p>
-    //    : <table className="table table-striped" aria-labelledby="tableLabel">
-    //        <thead>
-    //            <tr>
-    //                <th>Date</th>
-    //                <th>Temp. (C)</th>
-    //                <th>Temp. (F)</th>
-    //                <th>Summary</th>
-    //            </tr>
-    //        </thead>
-    //        <tbody>
-    //            {forecasts.map(forecast =>
-    //                <tr key={forecast.date}>
-    //                    <td>{forecast.date}</td>
-    //                    <td>{forecast.temperatureC}</td>
-    //                    <td>{forecast.temperatureF}</td>
-    //                    <td>{forecast.summary}</td>
-    //                </tr>
-    //            )}
-    //        </tbody>
-    //    </table>;
+        load();
+
+        if (isTokenExpired()) {
+            onLogout();
+        }
+    }, [onLogout]);
 
     return (
         <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800">
@@ -92,38 +100,11 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                         <RecordPage records={records} setRecords={setRecords} />
                     )}
                     {activeMenu === "billing" && <BillingPage records={records} />}
-                    {activeMenu === "students" && <StudentManagePage students={studentsBalance} />}
+                    {activeMenu === "students" && <StudentManagePage students={students} fetchStudents={fetchStudents} />}
                 </div>
             </div>
         </div >
     );
-
-    //async function populateWeatherData() {
-    //    const response = await fetch('weatherforecast');
-    //    if (response.ok) {
-    //        const data = await response.json();
-    //        setForecasts(data);
-    //    }
-    //}
-
-    async function fetchStudentBalance() {
-        try {
-            const response = await fetch("/api/studentbalance/balance", {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
-});
-
-            if (response.ok) {
-                const data = await response.json();
-                setStudentsBalance(data);
-            } else {
-                console.error("请求失败:", response.status);
-            }
-        } catch (error) {
-            console.error("网络错误:", error);
-        }
-    }
 };
 
 // Dashboard Page

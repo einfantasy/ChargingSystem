@@ -24,13 +24,20 @@ export interface Forecast {
 }
 
 export interface StudentBalance {
+    RowNum: number;
     student_Id: string;
     name: string;
     balance: number;
     teacher: string;
     subject: string;
+    hourLeft: number;
 }
 export interface Student {
     student_Id: string;
+    name: string;
+}
+
+export interface Teacher {
+    teacher_Id: string;
     name: string;
 }

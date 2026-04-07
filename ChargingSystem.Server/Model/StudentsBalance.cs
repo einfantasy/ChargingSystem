@@ -4,11 +4,13 @@ namespace ChargingSystem.Server
 {
     public class StudentsBalance
     {
+        public int RowNum { get; set; }
         public Guid Student_Id { get; set; }
         public string Name { get; set; }
         public decimal Balance { get; set; }
         public string Teacher { get; set; }
         public string Subject { get; set; }
+        public decimal HourLeft { get; set; }
     }
 
     public class StudentsBalanceService

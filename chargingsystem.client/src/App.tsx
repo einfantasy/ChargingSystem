@@ -52,6 +52,8 @@ function App() {
     const handleLogout = () => {
         setUser(null);
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        localStorage.removeItem('expiresAt');
     };
 
     if (isChecking) return <div>正在加载应用...</div>;

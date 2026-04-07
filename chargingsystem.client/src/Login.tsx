@@ -23,9 +23,11 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
             if (response.ok) {
                 const data: User = await response.json();
-                console.log("后端返回的原始数据:", data)
-                onLoginSuccess(data);
+
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("expiresAt", data.expiresAt);
+
+                onLoginSuccess(data);
             } else {
                 const msg = await response.text();
                 setError(msg || '登录失败');

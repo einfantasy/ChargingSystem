@@ -24,5 +24,13 @@ namespace ChargingSystem.Server
                 success = true
             });
         }
+
+        [Authorize]
+        [HttpGet("list")]
+        public async Task<IActionResult> GetStudents()
+        {
+            var data = await _service.GetStudents();
+            return Ok(data);
+        }
     }
 }
