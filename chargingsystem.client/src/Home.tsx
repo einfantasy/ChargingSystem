@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import type { Student } from './types';
+import type { Student, Teacher, DashboardInfo } from './types';
 import StudentManagePage from "./components/StudentManage";
+import TeacherManagePage from "./components/TeacherManage";
+import ConsumeManagePage from "./components/ConsumeManage";
 
 interface HomeProps {
     user: { username: string };
     onLogout: () => void;
-}
-interface RecordItem {
-    id: number;
-    student: string;
-    course: string;
-    hours: number;
-    price: number;
-    date: string;
 }
 
 function isTokenExpired() {
@@ -27,8 +21,35 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     //const [forecasts, setForecasts] = useState<Forecast[]>();
 
     const [activeMenu, setActiveMenu] = useState("dashboard");
-    const [records, setRecords] = useState<RecordItem[]>([]);
     const [students, setStudents] = useState<Student[]>([]);
+    const [teachers, setTeachers] = useState<Teacher[]>([]);
+
+    const initialDashboard: DashboardInfo = {
+        totalMoney: "0",
+        totalHours: "0",
+        teacherCount: "0",
+        studentCount: "0"
+    };
+    const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo>(initialDashboard);
+
+    const fetchDashboard = async () => {
+        try {
+            const response = await fetch("/api/util/dashboard", {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setDashboardInfo(data);
+            } else {
+                console.error("请求失败:", response.status);
+            }
+        } catch (error) {
+            console.error("网络错误:", error);
+        }
+    }
 
     const fetchStudents = async () => {
         try {
@@ -49,9 +70,30 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         }
     }
 
+    const fetchTeachers = async () => {
+        try {
+            const response = await fetch("/api/teacher/list", {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setTeachers(data);
+            } else {
+                console.error("请求失败:", response.status);
+            }
+        } catch (error) {
+            console.error("网络错误:", error);
+        }
+    }
+
     useEffect(() => {
         const load = async () => {
             await fetchStudents();
+            await fetchTeachers();
+            await fetchDashboard();
         };
 
         load();
@@ -71,7 +113,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                         { key: "dashboard", label: "首页" },
                         { key: "students", label: "学生管理" },
                         { key: "teachers", label: "教师管理" },
-                        { key: "courses", label: "课时管理" },
+                        { key: "consume", label: "课时管理" },
                     ].map((item) => (
                         <div
                             key={item.key}
@@ -92,8 +134,10 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                         <button onClick={onLogout} className="m-4 w-24 py-2 rounded-lg btn-gradient">退出登录</button>
                     </div>
 
-                    {activeMenu === "dashboard" && <Dashboard records={records} />}
+                    {activeMenu === "dashboard" && <Dashboard dashboardInfo={dashboardInfo} />}
                     {activeMenu === "students" && <StudentManagePage students={students} fetchStudents={fetchStudents} />}
+                    {activeMenu === "teachers" && <TeacherManagePage teachers={teachers} fetchTeachers={fetchTeachers} />}
+                    {activeMenu === "consume" && <ConsumeManagePage teachers={teachers} />}
                 </div>
             </div>
         </div >
@@ -101,23 +145,22 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 };
 
 // Dashboard Page
-function Dashboard({ records }: { records: RecordItem[] }) {
-    const totalHours = records.reduce((sum, r) => sum + r.hours, 0);
-    const totalMoney = records.reduce((sum, r) => sum + r.hours * r.price, 0);
+function Dashboard({ dashboardInfo }: { dashboardInfo: DashboardInfo; }) {
 
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">数据总览</h2>
-            <div className="grid grid-cols-3 gap-4">
-                <Card title="总课时" value={totalHours} />
-                <Card title="总收入" value={`¥${totalMoney}`} />
-                <Card title="记录数" value={records.length} />
+            <div className="grid grid-cols-2 gap-4 ">
+                <Card title="总课时" value={dashboardInfo.totalHours} />
+                <Card title="总收入" value={`¥${dashboardInfo.totalMoney}`} />
+                <Card title="教师人数" value={dashboardInfo.teacherCount} />
+                <Card title="学生人数" value={dashboardInfo.studentCount} />
             </div>
         </div>
     );
 }
 
-function Card({ title, value }: any) {
+function Card({ title, value }: { title: string; value: string }) {
     return (
         <div className="bg-white p-4 rounded shadow">
             <div className="text-gray-500">{title}</div>

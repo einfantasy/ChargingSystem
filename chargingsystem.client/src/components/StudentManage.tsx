@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Student, Teacher } from '../types';
+import type { Student } from '../types';
 
 export default function StudentManagePage({ students, fetchStudents }: { students: Student[]; fetchStudents: () => Promise<void> }) {
     const [showModal, setShowModal] = useState(false);
@@ -25,7 +25,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                     Authorization: "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
-                    student_Id: crypto.randomUUID(),
+                    studentId: crypto.randomUUID(),
                     name,
                 } as Student),
             });
@@ -54,27 +54,12 @@ export default function StudentManagePage({ students, fetchStudents }: { student
     const [showRechargeModal, setShowRechargeModal] = useState(false);
     const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
-    const [teachers, setTeachers] = useState<Teacher[]>([]);
-    const [selectedTeacher, setSelectedTeacher] = useState("");
-
-    const [amount, setAmount] = useState(0);
+    const [price, setPrice] = useState(0);
     const [hour, setHour] = useState(0);
     const [cost, setCost] = useState(0);
 
     const handleRechargeClick = async (student: Student) => {
         setCurrentStudent(student);
-        const res = await fetch("/api/teacher/list", {
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("token")
-            },
-        });
-        const data = await res.json();
-        setTeachers(data);
-
-        if (data.length > 0) {
-            setSelectedTeacher(data[0].name);
-        }
-
         setShowRechargeModal(true);
     };
 
@@ -90,12 +75,11 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                 Authorization: "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
-                student_Id: currentStudent.student_Id,
-                teacher_Id: teachers.find(t => t.name === selectedTeacher)?.teacher_Id,
-                recharge_Amount: amount,
-                recharge_Hour: hour,
+                studentId: currentStudent.studentId,
+                rechargePrice: price,
+                rechargeHour: hour,
                 date: new Date().toLocaleDateString('sv-SE'),
-                cost: cost,
+                cost: cost
             }),
         });
 
@@ -110,7 +94,10 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             {/* 打开弹窗按钮 */}
             <div className="flex justify-end">
                 <button
-                    onClick={() => setShowModal(true)}
+                    onClick={() => {
+                        setShowModal(true);
+                        setName("")
+                    }                    }
                     className="bg-blue-500 text-white px-4 py-2 rounded mb-4 btn-gradient"
                 >
                     新增学生
@@ -121,19 +108,24 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             <table className="w-full bg-white shadow rounded" >
                 <thead>
                     <tr>
-                        <th>姓名 </th>
-                        <th>操作 </th>
+                        <th>姓名</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
                         students.map((s) => (
-                            <tr key={s.student_Id} className="text-center border-t">
+                            <tr key={s.studentId} className="text-center border-t">
                                 <td>{s.name} </td>
                                 <td>
                                     <div className="flex space-x-4 justify-center">
                                         <button className="bg-green-500 text-white px-2 py-1 rounded"
-                                            onClick={() => handleRechargeClick(s)}>
+                                            onClick={() => {
+                                                handleRechargeClick(s);
+                                                setHour(0);
+                                                setPrice(0);
+                                                setCost(0);
+                                            }}>
                                             充值
                                         </button>
                                         {/*< button className="bg-blue-500 text-white px-2 py-1 rounded" >*/}
@@ -155,13 +147,9 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                 showModal && (
                     <div
                         className="fixed inset-0 bg-black/30 flex items-center justify-center"
-                        onClick={() => setShowModal(false)
-                        }
                     >
                         <div
                             className="bg-white p-6 rounded shadow w-80"
-                            onClick={(e: React.MouseEvent) => e.stopPropagation()
-                            }
                         >
                             <h3 className="text-xl font-bold mb-4" > 新增学生 </h3>
 
@@ -200,48 +188,15 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                 showRechargeModal && currentStudent && (
                     <div
                         className="fixed inset-0 bg-black/30 flex items-center justify-center"
-                        onClick={() => setShowRechargeModal(false)}
                     >
                         <div
                             className="bg-white p-6 rounded shadow w-80"
-                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
                         >
                             <h3 className="text-xl font-bold mb-4">
                                 充值 - {currentStudent.name}
                             </h3>
 
                             <div className="flex flex-col gap-3">
-                                <span className="text-sm text-gray-500 mb-1">
-                                    请选择老师
-                                </span>
-                                老师选择
-                                <select
-                                    className="border p-2 rounded"
-                                    value={selectedTeacher}
-                                    onChange={(e) => setSelectedTeacher(e.target.value)}
-                                >
-                                    {teachers.map((t) => (
-                                        <option key={t.teacher_Id} value={t.name}>
-                                            {t.name}
-                                        </option>
-                                    ))}
-                                </select>
-
-
-                                充值金额
-                                <div className="flex flex-col">
-                                    <span className="text-sm text-gray-500 mb-1">
-                                        请输入本次充值的金额（单位：元）
-                                    </span>
-                                    <input
-                                        type="number"
-                                        placeholder="充值金额"
-                                        className="border p-2 rounded"
-                                        value={amount}
-                                        onChange={(e) => setAmount(Number(e.target.value))}
-                                    />
-                                </div>
-
                                 充值课时
                                 <div className="flex flex-col">
                                     <span className="text-sm text-gray-500 mb-1">
@@ -256,14 +211,28 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                                     />
                                 </div>
 
-                                课时成本
+                                课时单价
                                 <div className="flex flex-col">
                                     <span className="text-sm text-gray-500 mb-1">
-                                        请输入课时成本
+                                        请输入课时单价
                                     </span>
                                     <input
                                         type="number"
-                                        placeholder="课时成本"
+                                        placeholder="课时单价"
+                                        className="border p-2 rounded"
+                                        value={price}
+                                        onChange={(e) => setPrice(Number(e.target.value))}
+                                    />
+                                </div>
+
+                                成本价
+                                <div className="flex flex-col">
+                                    <span className="text-sm text-gray-500 mb-1">
+                                        请输入成本价
+                                    </span>
+                                    <input
+                                        type="number"
+                                        placeholder="成本价"
                                         className="border p-2 rounded"
                                         value={cost}
                                         onChange={(e) => setCost(Number(e.target.value))}

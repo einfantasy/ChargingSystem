@@ -15,5 +15,11 @@ namespace ChargingSystem.Server
         {
             return await _context.Teachers.ToListAsync();
         }
+
+        public async Task AddTeacherAsync(Teacher teacher)
+        {
+            await _context.Teachers.AddAsync(teacher);
+            await _context.SaveChangesAsync();
+        }
     }
 }

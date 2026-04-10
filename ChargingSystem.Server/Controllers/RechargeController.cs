@@ -25,13 +25,11 @@ namespace ChargingSystem.Server
 
     public class RechargeDto
     {
-        public string Student_Id { get; set; }
+        public string StudentId { get; set; }
 
-        public string Teacher_Id { get; set; }
+        public decimal RechargePrice { get; set; }
 
-        public decimal Recharge_Amount { get; set; }
-
-        public int Recharge_Hour { get; set; }
+        public decimal RechargeHour { get; set; }
 
         public string Date { get; set; }
 

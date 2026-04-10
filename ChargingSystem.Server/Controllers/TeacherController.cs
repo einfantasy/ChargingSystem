@@ -21,5 +21,16 @@ namespace ChargingSystem.Server
             var data = await _service.GetTeachers();
             return Ok(data);
         }
+
+        [Authorize]
+        [HttpPost("add")]
+        public async Task<IActionResult> AddTeacher([FromBody] Teacher teacher)
+        {
+            await _service.AddTeacherAsync(teacher);
+            return Ok(new
+            {
+                success = true
+            });
+        }
     }
 }

@@ -23,12 +23,28 @@ export interface Forecast {
     summary: string;
 }
 
+export interface DashboardInfo {
+    totalHours: string;
+    totalMoney: string;
+    teacherCount: string;
+    studentCount: string;
+}
+
 export interface Student {
-    student_Id: string;
+    studentId: string;
     name: string;
 }
 
 export interface Teacher {
-    teacher_Id: string;
+    teacherId: string;
     name: string;
+    subject: string;
+}
+
+export interface StudentBalanceDto {
+    studentId: string;
+    studentName: string;
+    rechargeId: string;
+    remainingHours: number;
+    cost: number;
 }

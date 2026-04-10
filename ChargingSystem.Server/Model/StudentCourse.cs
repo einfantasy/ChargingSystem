@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChargingSystem.Server
 {
@@ -7,17 +8,7 @@ namespace ChargingSystem.Server
     {
         [Key]
         public Guid Id { get; set; }
-        public string Student_Id { get; set; }
-        public string Teacher_Id { get; set; }
-    }
-
-    public class StudentCourseService
-    {
-        private readonly AppDbContext _context;
-
-        public StudentCourseService(AppDbContext context)
-        {
-            _context = context;
-        }
+        public Guid Student_Id { get; set; }
+        public Guid Teacher_Id { get; set; }
     }
 }

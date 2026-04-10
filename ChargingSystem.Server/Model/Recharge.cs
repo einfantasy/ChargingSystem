@@ -1,20 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChargingSystem.Server
 {
+    [Table("Recharges")]
     public class Recharge
     {
         [Key]
         public Guid Id { get; set; }
 
-        public Guid StudentCourse_Id { get; set; }
+        public Guid StudentId { get; set; }
 
-        public decimal Recharge_Amount { get; set; }
+        public decimal RechargePrice { get; set; }
 
-        public int Recharge_Hour { get; set; }
-
-        public decimal Cost { get; set; } = 0;
+        public decimal RechargeHour { get; set; }
 
         public DateTime Date { get; set; }
+
+        public decimal Cost { get; set; }
     }
 }

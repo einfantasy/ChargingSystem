@@ -16,7 +16,7 @@ namespace ChargingSystem.Server
 
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> AddConsume([FromBody] Consume consume)
+        public async Task<IActionResult> AddConsume([FromBody] ConsumeDto consume)
         {
             await _service.AddConsumeAsync(consume);
             return Ok(new
@@ -24,5 +24,30 @@ namespace ChargingSystem.Server
                 success = true
             });
         }
+
+        [HttpGet("balance")]
+        public async Task<IActionResult> GetBalance()
+        {
+            var data = _service.GetBalanceListAsync();
+            return Ok(data);
+        }
+    }
+
+    public class StudentBalanceDto
+    {
+        public Guid StudentId { get; set; }
+        public string StudentName { get; set; }
+        public Guid RechargeId { get; set; }
+        public decimal RemainingHours { get; set; }
+        public decimal Cost { get; set; }
+    }
+
+    public class ConsumeDto
+    {
+        public Guid RechargeId { get; set; }
+        public Guid TeacherId { get; set; }
+        public int Hour { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Cost { get; set; }
     }
 }

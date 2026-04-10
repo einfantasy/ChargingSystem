@@ -22,38 +22,18 @@ namespace ChargingSystem.Server
 
             try
             {
-                // 1️⃣ 判断 StudentCourses 是否已存在
-                var exists = await _context.StudentCourses
-                    .AnyAsync(x => x.Student_Id == dto.Student_Id
-                                && x.Teacher_Id == dto.Teacher_Id);
-
-                Guid scId = Guid.NewGuid();
-                if (!exists)
-                {
-                    var course = new StudentCourse
-                    {
-                        Id = scId,
-                        Student_Id = dto.Student_Id,
-                        Teacher_Id = dto.Teacher_Id
-                    };
-
-                    _context.StudentCourses.Add(course);
-                }
-
-                // 2️⃣ 插入 Recharge
                 var recharge = new Recharge
                 {
                     Id = Guid.NewGuid(),
-                    StudentCourse_Id = scId,
-                    Recharge_Amount = dto.Recharge_Amount,
-                    Recharge_Hour = dto.Recharge_Hour,
-                    Cost = dto.Cost,
-                    Date = DateTime.Parse(dto.Date)
+                    StudentId = Guid.Parse(dto.StudentId),
+                    RechargePrice = dto.RechargePrice,
+                    RechargeHour = dto.RechargeHour,
+                    Date = DateTime.Parse(dto.Date),
+                    Cost = dto.Cost
                 };
 
                 _context.Recharges.Add(recharge);
 
-                // 3️⃣ 一次性提交
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

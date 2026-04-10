@@ -16,6 +16,8 @@ builder.Services.AddScoped<TeacherService>();
 builder.Services.AddScoped<RechargeService>();
 builder.Services.AddScoped<ConsumeService>();
 builder.Services.AddScoped<StudentCourse>();
+builder.Services.AddScoped<StudentCourseService>();
+builder.Services.AddScoped<UtilService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
