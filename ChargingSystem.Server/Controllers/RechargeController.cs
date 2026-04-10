@@ -21,6 +21,14 @@ namespace ChargingSystem.Server
             await _service.AddRechargeAsync(dto);
             return Ok(new { success = true });
         }
+
+        [Authorize]
+        [HttpGet("query")]
+        public async Task<IActionResult> GetRechargeList([FromQuery] string studentId)
+        {
+            var data = await _service.GetRechargeList(studentId);
+            return Ok(data);
+        }
     }
 
     public class RechargeDto

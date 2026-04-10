@@ -48,3 +48,12 @@ export interface StudentBalanceDto {
     remainingHours: number;
     cost: number;
 }
+
+export interface RechargeRecord {
+    id: string;
+    studentId: string;
+    rechargePrice: number;
+    rechargeHour: number;
+    date: string
+    cost: number;
+}

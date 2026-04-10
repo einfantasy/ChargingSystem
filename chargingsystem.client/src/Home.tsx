@@ -135,8 +135,8 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                     </div>
 
                     {activeMenu === "dashboard" && <Dashboard dashboardInfo={dashboardInfo} />}
-                    {activeMenu === "students" && <StudentManagePage students={students} fetchStudents={fetchStudents} />}
                     {activeMenu === "teachers" && <TeacherManagePage teachers={teachers} fetchTeachers={fetchTeachers} />}
+                    {activeMenu === "students" && <StudentManagePage students={students} fetchStudents={fetchStudents} />}
                     {activeMenu === "consume" && <ConsumeManagePage teachers={teachers} />}
                 </div>
             </div>

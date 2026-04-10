@@ -104,7 +104,7 @@ function ConsumeManagePage({ teachers }: { teachers: Teacher[] }) {
             {
                 showModal && (
                     <div
-                        className="fixed inset-0 bg-black/30 flex items-center justify-center"
+                        className="fixed inset-0 bg-black/30 flex items-center justify-center modal-overlay"
                     >
                         <div
                             className="bg-white p-6 rounded shadow w-80"

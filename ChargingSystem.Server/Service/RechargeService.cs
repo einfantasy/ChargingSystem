@@ -11,9 +11,9 @@ namespace ChargingSystem.Server
             _context = context;
         }
 
-        public async Task<List<Recharge>> GetResumeList()
+        public async Task<List<Recharge>> GetRechargeList(string studentId)
         {
-            return await _context.Recharges.ToListAsync();
+            return await _context.Recharges.Where(x => x.StudentId == Guid.Parse(studentId)).ToListAsync();
         }
 
         public async Task AddRechargeAsync(RechargeDto dto)
