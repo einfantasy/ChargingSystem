@@ -54,6 +54,15 @@ export interface RechargeRecord {
     studentId: string;
     rechargePrice: number;
     rechargeHour: number;
-    date: string
+    date: string;
     cost: number;
+}
+
+export interface ConsumeRecord {
+    id: string;
+    rechargeId: string;
+    teacherName: string;
+    subject: string;
+    date: string
+    hour: number;
 }

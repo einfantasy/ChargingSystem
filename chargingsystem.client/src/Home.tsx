@@ -154,7 +154,7 @@ function Dashboard({ dashboardInfo }: { dashboardInfo: DashboardInfo; }) {
                 <Card title="总课时" value={dashboardInfo.totalHours} />
                 <Card title="总收入" value={`¥${dashboardInfo.totalMoney}`} />
                 <Card title="教师人数" value={dashboardInfo.teacherCount} />
-                <Card title="学生人数" value={dashboardInfo.studentCount} />
+                <Card title="本月上课人数" value={dashboardInfo.studentCount} />
             </div>
         </div>
     );

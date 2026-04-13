@@ -82,16 +82,13 @@ export default function StudentManagePage({ students, fetchStudents }: { student
         setShowRechargeModal(false);
     };
 
-    // ... 假设你的组件内部
     const [searchTerm, setSearchTerm] = useState('');
-
     // 关键步骤：在渲染前过滤数据
     const filteredStudents = students.filter(s =>
         s.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const [showRecordModal, setShowRecordModal] = useState(false);
-
     const [rechargeRecords, setRechargeRecords] = useState<RechargeRecord[]>([]);
     const fetchRechargeRecords = async (studentId: string) => {
         setLoading(true);
@@ -314,60 +311,62 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                     </div>
                 )
             }
-            {showRecordModal && (
-                <div className="fixed inset-0 bg-black/30 flex items-center justify-center modal-overlay">
-                    <div className="bg-white p-6 rounded-lg shadow-xl w-3/4 max-w-2xl">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold">
-                                {currentStudent?.name} 的充值记录
-                            </h3>
-                            <button
-                                onClick={() => setShowRecordModal(false)}
-                                className="text-gray-500 hover:text-black"
-                            >
-                                ✕
-                            </button>
-                        </div>
+            {
+                showRecordModal && (
+                    <div className="fixed inset-0 bg-black/30 flex items-center justify-center modal-overlay">
+                        <div className="bg-white p-6 rounded-lg shadow-xl w-3/4 max-w-2xl">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-bold">
+                                    {currentStudent?.name} 的充值记录
+                                </h3>
+                                <button
+                                    onClick={() => setShowRecordModal(false)}
+                                    className="text-gray-500 hover:text-black"
+                                >
+                                    ✕
+                                </button>
+                            </div>
 
-                        <div className="max-h-96 overflow-y-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="bg-gray-100">
-                                        <th className="p-2 border">日期</th>
-                                        <th className="p-2 border">金额</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rechargeRecords
-                                        .filter(r => r.studentId === currentStudent?.studentId)
-                                        .map(record => (
-                                            <tr key={record.id} className="border-t">
-                                                <td className="p-2 border">{record.date}</td>
-                                                <td className="p-2 border">￥{record.rechargeHour * record.rechargePrice}</td>
-                                            </tr>
-                                        ))
-                                    }
-                                    {/* 如果没有记录 */}
-                                    {rechargeRecords.filter(r => r.studentId === currentStudent?.studentId).length === 0 && (
-                                        <tr>
-                                            <td colSpan={2} className="p-4 text-center text-gray-400">暂无充值记录</td>
+                            <div className="max-h-96 overflow-y-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-100">
+                                            <th className="p-2 border">日期</th>
+                                            <th className="p-2 border">金额</th>
                                         </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        {rechargeRecords
+                                            .filter(r => r.studentId === currentStudent?.studentId)
+                                            .map(record => (
+                                                <tr key={record.id} className="border-t">
+                                                    <td className="p-2 border">{record.date.substring(0, 10)}</td>
+                                                    <td className="p-2 border">￥{record.rechargeHour * record.rechargePrice}</td>
+                                                </tr>
+                                            ))
+                                        }
+                                        {/* 如果没有记录 */}
+                                        {rechargeRecords.filter(r => r.studentId === currentStudent?.studentId).length === 0 && (
+                                            <tr>
+                                                <td colSpan={2} className="p-4 text-center text-gray-400">暂无充值记录</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <div className="mt-6 flex justify-end">
-                            <button
-                                onClick={() => setShowRecordModal(false)}
-                                className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-                            >
-                                关闭
-                            </button>
+                            <div className="mt-6 flex justify-end">
+                                <button
+                                    onClick={() => setShowRecordModal(false)}
+                                    className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+                                >
+                                    关闭
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
         </div>
     );
 }

@@ -18,21 +18,36 @@ namespace ChargingSystem.Server
             int year = DateTime.Now.Year;
             int month = DateTime.Now.Month;
             DashboardInfo info = new DashboardInfo() { TotalHours = "0", TotalMoney = "0" };
-            var results = await _context.Consumes
+            var consumes = await _context.Consumes
                 .Where(c => c.Date.Year == year && c.Date.Month == month)
                 .OrderByDescending(c => c.Date) // 通常按日期排序
                 .ToListAsync();
 
-            decimal totalHours = results.Sum(c => c.Hour);
-            decimal totalMoney = 0;// Need to calculate later
+            var rechargeIds = consumes.Select(c => c.RechargeId).Distinct().ToList();
+            var rechargesDict = await _context.Recharges
+                .Where(r => rechargeIds.Contains(r.Id))
+                .ToDictionaryAsync(r => r.Id);
+
+            decimal totalHours = consumes.Sum(c => c.Hour);
+            decimal totalMoney = 0;
+            foreach (var c in consumes)
+            {
+                // 确保能找到对应的充值记录
+                if (rechargesDict.TryGetValue(c.RechargeId, out var r))
+                {
+                    // 公式: (RechargePrice - CostAtTime) * Hour
+                    totalMoney += (r.RechargePrice - c.CostAtTime) * c.Hour;
+                }
+            }
 
             info.TotalHours = totalHours.ToString();
             info.TotalMoney = totalMoney.ToString();
             info.TeacherCount = (await _context.Teachers.CountAsync()).ToString();
-            var scCollect = await _context.Consumes
-                .Where(c => c.Date.Year == year && c.Date.Month == month)
-                .Select(c => c.RechargeId).ToListAsync<Guid>();
-            info.StudentCount = (await _context.StudentCourses.Where(sc => scCollect.Contains(sc.Id)).Select(sc => sc.Student_Id).Distinct().CountAsync()).ToString();
+            info.StudentCount = (await _context.Recharges
+                .Where(r => rechargeIds.Contains(r.Id))
+                .Select(r => r.StudentId) // 只取 StudentId
+                .Distinct()               // 去重：一个学生可能有多笔充值记录
+                .CountAsync()).ToString();            // 统计总数
             return info;
         }
     }

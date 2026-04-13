@@ -25,10 +25,19 @@ namespace ChargingSystem.Server
             });
         }
 
+        [Authorize]
         [HttpGet("balance")]
         public async Task<IActionResult> GetBalance()
         {
             var data = _service.GetBalanceListAsync();
+            return Ok(data);
+        }
+
+        [Authorize]
+        [HttpGet("query")]
+        public async Task<IActionResult> GetConsumeList([FromQuery] string rechargeId)
+        {
+            var data = await _service.GetConsumeList(rechargeId);
             return Ok(data);
         }
     }
@@ -46,8 +55,18 @@ namespace ChargingSystem.Server
     {
         public Guid RechargeId { get; set; }
         public Guid TeacherId { get; set; }
-        public int Hour { get; set; }
+        public decimal Hour { get; set; }
         public DateTime Date { get; set; }
         public decimal Cost { get; set; }
+    }
+
+    public class ConsumeListDto
+    {
+        public Guid Id { get; set; }
+        public Guid RechargeId { get; set; }
+        public string TeacherName { get; set; }
+        public string Subject { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Hour { get; set; }
     }
 }

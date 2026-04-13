@@ -23,6 +23,7 @@ namespace ChargingSystem.Server
             {
                 Id = Guid.NewGuid(), // 修正：使用 Guid.NewGuid()
                 RechargeId = consume.RechargeId,
+                TeacherId = consume.TeacherId,
                 Hour = consume.Hour,
                 Date = consume.Date,
                 CostAtTime = consume.TeacherId == Guid.Parse("7DCCBBB6-8B4A-420C-B1BE-500ED93F1697") ? 0 : consume.Cost,
@@ -69,6 +70,28 @@ namespace ChargingSystem.Server
                 .ToListAsync();
 
             return results;
+        }
+
+        public async Task<List<ConsumeListDto>> GetConsumeList(string rechargeId)
+        {
+            var result = _context.Consumes
+                .Where(c => c.RechargeId == Guid.Parse(rechargeId))
+                .Join(_context.Teachers,
+                    c => c.TeacherId,
+                    t => t.TeacherId,
+                    (c, t) => new ConsumeListDto
+                    {
+                        Id = c.Id,
+                        RechargeId = c.RechargeId,
+                        TeacherName = t.Name,
+                        Subject = t.Subject,
+                        Date = c.Date,
+                        Hour = c.Hour
+                    })
+                .ToList();
+
+
+            return result;
         }
     }
 }
