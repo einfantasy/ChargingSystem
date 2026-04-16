@@ -72,10 +72,12 @@ namespace ChargingSystem.Server
             return results;
         }
 
-        public async Task<List<ConsumeListDto>> GetConsumeList(string rechargeId)
+        public async Task<List<ConsumeListDto>> GetConsumeList(string rechargeId, string queryDate)
         {
+            DateTime dt = DateTime.ParseExact(queryDate, "yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
+
             var result = _context.Consumes
-                .Where(c => c.RechargeId == Guid.Parse(rechargeId))
+                .Where(c => c.RechargeId == Guid.Parse(rechargeId) && c.Date.Year == dt.Year && c.Date.Month == dt.Month)
                 .Join(_context.Teachers,
                     c => c.TeacherId,
                     t => t.TeacherId,
@@ -88,8 +90,8 @@ namespace ChargingSystem.Server
                         Date = c.Date,
                         Hour = c.Hour
                     })
+                .OrderBy(re => re.Date)
                 .ToList();
-
 
             return result;
         }

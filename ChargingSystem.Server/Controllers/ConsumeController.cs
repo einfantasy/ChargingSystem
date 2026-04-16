@@ -35,9 +35,9 @@ namespace ChargingSystem.Server
 
         [Authorize]
         [HttpGet("query")]
-        public async Task<IActionResult> GetConsumeList([FromQuery] string rechargeId)
+        public async Task<IActionResult> GetConsumeList([FromQuery] string rechargeId, [FromQuery] string queryDate)
         {
-            var data = await _service.GetConsumeList(rechargeId);
+            var data = await _service.GetConsumeList(rechargeId, queryDate);
             return Ok(data);
         }
     }

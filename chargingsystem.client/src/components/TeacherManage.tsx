@@ -87,7 +87,7 @@ export default function StudentManagePage({ teachers, fetchTeachers }: { teacher
                                 <td>{t.subject} </td>
                                 < td >
                                     <div className="flex space-x-4 justify-center" >
-                                        <button className="bg-red-500 text-white px-2 py-1 rounded" >
+                                        <button className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded">
                                             删除
                                         </button>
                                     </div>

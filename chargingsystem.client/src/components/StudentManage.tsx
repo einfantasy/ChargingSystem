@@ -178,7 +178,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                                         >
                                             充值记录
                                         </button>
-                                        <button className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
+                                        <button className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded">
                                             删除
                                         </button>
                                     </div>
@@ -358,7 +358,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                             <div className="mt-6 flex justify-end">
                                 <button
                                     onClick={() => setShowRecordModal(false)}
-                                    className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+                                    className="px-3 py-1 border rounded"
                                 >
                                     关闭
                                 </button>
