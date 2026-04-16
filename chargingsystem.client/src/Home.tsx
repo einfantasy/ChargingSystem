@@ -11,94 +11,81 @@ import {
     Clock,
     ChevronLeft,
     ChevronRight,
-    LogOut
+    LogOut,
+    School
 } from 'lucide-react';
-
 
 interface HomeProps {
     user: { username: string };
     onLogout: () => void;
 }
 
+// --- 辅助函数 ---
 function isTokenExpired() {
     const expiresAt = localStorage.getItem("expiresAt");
     if (!expiresAt) return true;
-
     return new Date(expiresAt).getTime() < Date.now();
 }
 
 export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
-    //const [forecasts, setForecasts] = useState<Forecast[]>();
-
+    // --- 1. UI 状态 ---
     const [activeMenu, setActiveMenu] = useState("dashboard");
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    // --- 2. 业务数据状态 ---
     const [students, setStudents] = useState<Student[]>([]);
     const [teachers, setTeachers] = useState<Teacher[]>([]);
-
-    const initialDashboard: DashboardInfo = {
+    const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo>({
         totalMoney: "0",
         totalHours: "0",
         teacherCount: "0",
         studentCount: "0"
-    };
-    const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo>(initialDashboard);
+    });
 
+    // --- 3. API 请求逻辑 ---
     const fetchDashboard = async () => {
         try {
             const response = await fetch("/api/util/dashboard", {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
+                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
             });
-
             if (response.ok) {
                 const data = await response.json();
                 setDashboardInfo(data);
-            } else {
-                console.error("请求失败:", response.status);
             }
         } catch (error) {
-            console.error("网络错误:", error);
+            console.error("看板数据获取失败:", error);
         }
-    }
+    };
 
     const fetchStudents = async () => {
         try {
             const response = await fetch("/api/student/list", {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
+                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
             });
-
             if (response.ok) {
                 const data = await response.json();
                 setStudents(data);
-            } else {
-                console.error("请求失败:", response.status);
             }
         } catch (error) {
-            console.error("网络错误:", error);
+            console.error("学生列表获取失败:", error);
         }
-    }
+    };
 
     const fetchTeachers = async () => {
         try {
             const response = await fetch("/api/teacher/list", {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
+                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
             });
-
             if (response.ok) {
                 const data = await response.json();
                 setTeachers(data);
-            } else {
-                console.error("请求失败:", response.status);
             }
         } catch (error) {
-            console.error("网络错误:", error);
+            console.error("教师列表获取失败:", error);
         }
-    }
+    };
 
+    // --- 4. 副作用 ---
     useEffect(() => {
         const load = async () => {
             await fetchStudents();
@@ -113,8 +100,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         }
     }, [onLogout]);
 
-    const [isCollapsed, setIsCollapsed] = useState(false); // 控制折叠状态
-
+    // --- 5. 配置项 ---
     const menuItems = [
         { key: "dashboard", label: "首页", icon: <LayoutDashboard size={20} /> },
         { key: "students", label: "学生管理", icon: <Users size={20} /> },
@@ -123,33 +109,40 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     ];
 
     return (
-        <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800">
+        <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 text-white">
             <div className="flex h-screen">
-                {/* Sidebar */}
-                <div
-                    className={`relative transition-all duration-300 ease-in-out border-r border-white/10 bg-black/20 backdrop-blur-sm
-            ${isCollapsed ? "w-18" : "w-64"}`}
-                >
-                    {/* 折叠切换按钮 */}
+
+                {/* 侧边栏 Sidebar */}
+                <div className={`relative transition-all duration-300 ease-in-out border-r border-white/10 bg-black/20 backdrop-blur-sm ${isCollapsed ? "w-18" : "w-64"}`}>
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="absolute -right-3 top-12 bg-purple-900 rounded-full p-1 border border-white/20 hover:bg-purple-500 transition-colors"
+                        className="absolute -right-3 top-12 bg-purple-900 rounded-full p-1 border border-white/20 hover:bg-purple-500 transition-colors z-10"
                     >
                         {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
                     </button>
 
                     <div className="p-4">
-                        <h1 className={`font-bold mb-8 transition-all duration-300 truncate ${isCollapsed ? "text-center text-sm" : "text-lg px-2"}`}>
-                            {isCollapsed ? "开元" : "开元大学堂"}
+                        <h1 className={`font-bold mb-8 transition-all duration-300 flex items-center justify-center ${isCollapsed ? "" : "px-2"}`}>
+                            {isCollapsed ? (
+                                // 折叠状态：显示图标
+                                <div className="bg-purple-600/20 p-2 rounded-lg text-purple-400">
+                                    <School size={20} />
+                                </div>
+                            ) : (
+                                // 展开状态：调大字体
+                                <span className="text-2xl font-extrabold truncate tracking-wider whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">
+                                    开元大学堂
+                                </span>
+                            )}
                         </h1>
 
                         <nav className="space-y-2">
                             {menuItems.map((item) => (
                                 <div
                                     key={item.key}
-                                    title={isCollapsed ? item.label : ""} // 折叠时显示悬浮文字
+                                    title={isCollapsed ? item.label : ""}
                                     className={`flex items-center p-3 cursor-pointer rounded-lg transition-all duration-200
-                    ${activeMenu === item.key
+                                        ${activeMenu === item.key
                                             ? "bg-blue-600 shadow-lg shadow-blue-500/30 text-white"
                                             : "hover:bg-white/10 text-slate-300"
                                         }`}
@@ -163,48 +156,45 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                     </div>
                 </div>
 
-                {/* Main Content */}
+                {/* 主内容区域 Main Content */}
                 <div className="flex-1 p-6 overflow-auto">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h2>你好, {user?.username || "未知用户"}</h2>
+                    {/* 顶部 Header */}
+                    <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-xl">你好, {user?.username || "未知用户"}</h2>
                         <button
                             onClick={onLogout}
                             className="
                                 flex items-center gap-2 px-4 py-2 rounded-lg 
                                 bg-red-500/80 text-white text-sm font-medium
                                 transition-all duration-300 ease-out
-                                /* 悬浮效果：变色 + 放大 + 阴影 */
                                 hover:bg-red-600 hover:scale-105 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]
-                                /* 点击效果：缩小 */
-                                active:scale-95 
-                                group
+                                active:scale-95 group
                             "
                         >
-                            <LogOut
-                                size={16}
-                                className="transition-transform duration-300 group-hover:-translate-x-1"
-                            />
+                            <LogOut size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
                             <span>退出登录</span>
                         </button>
                     </div>
 
-                    {activeMenu === "dashboard" && <Dashboard dashboardInfo={dashboardInfo} />}
-                    {activeMenu === "teachers" && <TeacherManagePage teachers={teachers} fetchTeachers={fetchTeachers} />}
-                    {activeMenu === "students" && <StudentManagePage students={students} fetchStudents={fetchStudents} />}
-                    {activeMenu === "consume" && <ConsumeManagePage teachers={teachers} />}
+                    {/* 路由视图 */}
+                    <div className="text-slate-900">
+                        {activeMenu === "dashboard" && <Dashboard dashboardInfo={dashboardInfo} />}
+                        {activeMenu === "teachers" && <TeacherManagePage teachers={teachers} fetchTeachers={fetchTeachers} />}
+                        {activeMenu === "students" && <StudentManagePage students={students} fetchStudents={fetchStudents} />}
+                        {activeMenu === "consume" && <ConsumeManagePage teachers={teachers} />}
+                    </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 
-// Dashboard Page
+// --- 子组件：看板 ---
 function Dashboard({ dashboardInfo }: { dashboardInfo: DashboardInfo; }) {
-
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-4">数据总览</h2>
-            <div className="grid grid-cols-2 gap-4 ">
+            <h2 className="text-2xl font-bold mb-4 text-white">数据总览</h2>
+            <div className="grid grid-cols-2 gap-4">
                 <Card title="总课时" value={dashboardInfo.totalHours} />
                 <Card title="总收入" value={`¥${dashboardInfo.totalMoney}`} />
                 <Card title="教师人数" value={dashboardInfo.teacherCount} />
@@ -214,13 +204,12 @@ function Dashboard({ dashboardInfo }: { dashboardInfo: DashboardInfo; }) {
     );
 }
 
+// --- 子组件：卡片 ---
 function Card({ title, value }: { title: string; value: string }) {
     return (
-        <div className="bg-white p-4 rounded shadow">
-            <div className="text-gray-500">{title}</div>
-            <div className="text-xl font-bold">{value}</div>
+        <div className="bg-white p-4 rounded shadow transition-hover hover:shadow-md">
+            <div className="text-gray-500 text-sm">{title}</div>
+            <div className="text-xl font-bold text-slate-800">{value}</div>
         </div>
     );
 }
-
-

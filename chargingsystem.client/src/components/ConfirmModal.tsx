@@ -21,7 +21,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center modal-overlay">
+        <div className="modal-overlay">
             <div className="bg-white p-6 rounded shadow w-80">
                 <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
 
