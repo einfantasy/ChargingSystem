@@ -21,5 +21,18 @@ namespace ChargingSystem.Server
             await _context.Teachers.AddAsync(teacher);
             await _context.SaveChangesAsync();
         }
+
+        public async Task RemoveTeacherAsync(string teacherId)
+        {
+            // 使用 FindAsync 异步查找
+            var teacher = await _context.Teachers.FindAsync(Guid.Parse(teacherId));
+
+            if (teacher != null)
+            {
+                _context.Teachers.Remove(teacher);
+                // 使用 SaveChangesAsync 异步保存
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

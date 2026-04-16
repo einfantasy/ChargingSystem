@@ -32,5 +32,16 @@ namespace ChargingSystem.Server
                 success = true
             });
         }
+
+        [Authorize]
+        [HttpPost("remove")]
+        public async Task<IActionResult> RemoveTeacher([FromQuery] string teacherId)
+        {
+            await _service.RemoveTeacherAsync(teacherId);
+            return Ok(new
+            {
+                success = true
+            });
+        }
     }
 }

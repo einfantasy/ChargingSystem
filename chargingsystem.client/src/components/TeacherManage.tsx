@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Teacher } from "../types";
+import ConfirmModal from "./ConfirmModal";
 
 export default function StudentManagePage({ teachers, fetchTeachers }: { teachers: Teacher[]; fetchTeachers: () => Promise<void> }) {
     const [showModal, setShowModal] = useState(false);
@@ -8,6 +9,10 @@ export default function StudentManagePage({ teachers, fetchTeachers }: { teacher
     const [name, setName] = useState("");
     const [subject, setSubject] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
+
+    // 删除教师
+    const [removeTeacherId, setRemoveTeacherId] = useState("");
+
     const handleConfirm = async (): Promise<void> => {
         if (!name.trim() || !subject.trim()) {
             alert("请输入姓名");
@@ -53,6 +58,41 @@ export default function StudentManagePage({ teachers, fetchTeachers }: { teacher
         }
     };
 
+    const handleRemoveConfirm = async (teacherId: string): Promise<void> => {
+        if (loading) return;
+        setLoading(true);
+
+        try {
+            const response = await fetch(`/api/teacher/remove?teacherId=${teacherId}`, {
+                method: 'POST',
+                headers: {
+                    // 1. 指定内容类型
+                    'Content-Type': 'application/json',
+                    // 2. 注入身份验证 Token
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("请求失败");
+            }
+
+            // ✅ 关闭弹窗
+            setShowDeleteModal(false);
+
+            // ✅ 可选：刷新列表
+            await fetchTeachers();
+
+        } catch (err: unknown) {
+            console.error(err);
+            alert("删除失败");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4" > 教师管理 </h2>
@@ -63,6 +103,7 @@ export default function StudentManagePage({ teachers, fetchTeachers }: { teacher
                     onClick={() => {
                         setShowModal(true);
                         setName("");
+                        setSubject("");
                     }}
                     className="bg-blue-500 text-white px-4 py-2 rounded mb-4 btn-gradient"
                 >
@@ -87,7 +128,12 @@ export default function StudentManagePage({ teachers, fetchTeachers }: { teacher
                                 <td>{t.subject} </td>
                                 < td >
                                     <div className="flex space-x-4 justify-center" >
-                                        <button className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded">
+                                        <button className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded"
+                                            onClick={() => {
+                                                setRemoveTeacherId(t.teacherId);
+                                                setShowDeleteModal(true);
+                                            }
+                                            }>
                                             删除
                                         </button>
                                     </div>
@@ -95,6 +141,15 @@ export default function StudentManagePage({ teachers, fetchTeachers }: { teacher
                             </tr>
                         ))
                     }
+
+                    <ConfirmModal
+                        isOpen={showDeleteModal}
+                        title="确认删除"
+                        message="确定要删除这位教师的信息吗？此操作不可撤销。"
+                        loading={loading} // 使用你已有的 loading 状态
+                        onConfirm={() => handleRemoveConfirm(removeTeacherId)}
+                        onCancel={() => setShowDeleteModal(false)}
+                    />
                 </tbody>
             </table>
 
