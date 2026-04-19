@@ -200,15 +200,24 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                         <h3 className="text-lg sm:text-xl font-bold mb-4">充值 - {currentStudent.name}</h3>
                         <div className="flex flex-col gap-3 sm:gap-4">
                             {[
-                                { label: "充值课时", value: hour, setter: setHour, tip: "请输入购买的课时数" },
-                                { label: "课时单价", value: price, setter: setPrice, tip: "请输入课时单价" },
-                                { label: "成本价", value: cost, setter: setCost, tip: "请输入成本价" }
+                                { label: "充值课时", val: hour, setVal: setHour, tip: "请输入购买的课时数" },
+                                { label: "课时单价", val: price, setVal: setPrice, tip: "请输入课时单价" },
+                                { label: "成本价", val: cost, setVal: setCost, tip: "请输入成本价" }
                             ].map((field, idx) => (
                                 <div key={idx} className="flex flex-col">
                                     <span className="text-sm font-medium mb-1">{field.label}</span>
                                     <span className="text-xs text-gray-400 mb-1">{field.tip}</span>
-                                    <input type="number" className="border p-2 rounded text-sm" value={field.value}
-                                        onChange={(e) => field.setter(Number(e.target.value))} />
+                                    <input type="number" className="border p-2 rounded text-sm"
+                                        value={field.val === 0 ? '' : field.val}
+                                        placeholder="0"
+                                        onBlur={(e) => {
+                                            const v = e.target.value.trim();
+                                            if (v === '' || isNaN(Number(v))) field.setVal(0);
+                                        }}
+                                        onChange={(e) => {
+                                            const v = e.target.value;
+                                            field.setVal(v === '' ? 0 : Number(v));
+                                        }} />
                                 </div>
                             ))}
                         </div>

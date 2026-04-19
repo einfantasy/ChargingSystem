@@ -215,8 +215,22 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                             <input
                                 type="number"
                                 className="border p-2 rounded"
-                                value={hour}
-                                onChange={(e) => setHour(Number(e.target.value))}
+                                value={hour === 1 ? '' : hour}
+                                placeholder="1"
+                                onBlur={(e) => {
+                                    const val = e.target.value.trim();
+                                    if (val === '' || isNaN(Number(val))) {
+                                        setHour(0);
+                                    }
+                                }}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val === '') {
+                                        setHour(1);
+                                    } else {
+                                        setHour(Number(val));
+                                    }
+                                }}
                             />
                         </div>
 
