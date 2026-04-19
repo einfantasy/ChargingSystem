@@ -100,9 +100,9 @@ export default function TeacherManagePage({
         if (!showAddModal) return null;
         return (
             <div className="modal-overlay">
-                <div className="bg-white p-6 rounded-lg shadow-xl w-96">
-                    <h3 className="text-xl font-bold mb-6 text-gray-800">新增教师</h3>
-                    <div className="space-y-4">
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[90%] sm:w-96 max-h-[80vh] overflow-y-auto">
+                    <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-800">新增教师</h3>
+                    <div className="space-y-3 sm:space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">教师姓名</label>
                             <input
@@ -122,7 +122,7 @@ export default function TeacherManagePage({
                             />
                         </div>
                     </div>
-                    <div className="flex justify-end gap-3 mt-8">
+                    <div className="flex justify-end gap-2 sm:gap-3 mt-6 sm:mt-8">
                         <button
                             disabled={loading}
                             onClick={() => setShowAddModal(false)}
@@ -133,7 +133,7 @@ export default function TeacherManagePage({
                         <button
                             disabled={loading}
                             onClick={handleAddTeacher}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition-colors"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded transition-colors"
                         >
                             {loading ? "提交中..." : "确认"}
                         </button>
@@ -148,7 +148,7 @@ export default function TeacherManagePage({
     // ----------------------------------------------------------------
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-4">教师管理</h2>
+            <h2 className="text-xl lg:text-2xl font-bold mb-4">教师管理</h2>
 
             <div className="flex justify-between items-center mb-4">
                 <div className="flex justify-start">
@@ -160,30 +160,30 @@ export default function TeacherManagePage({
                         setSubject("");
                         setShowAddModal(true);
                     }}
-                    className="bgbg-blue-500 text-white px-4 py-2 rounded mb-4 btn-gradient"
+                    className="bg-blue-500 text-white px-4 py-2 rounded btn-gradient w-full sm:w-auto"
                 >
                     + 新增教师
                 </button>
             </div>
 
             {/* 数据表格 */}
-            <div className="overflow-hidden border rounded-lg bg-white shadow-sm">
-                <table className="w-full bg-white shadow rounded">
+            <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
+                <table className="w-full bg-white shadow rounded min-w-[500px]">
                     <thead>
                         <tr>
-                            <th>姓名</th>
-                            <th>学科</th>
-                            <th>操作</th>
+                            <th className="px-3 py-2">姓名</th>
+                            <th className="px-3 py-2">学科</th>
+                            <th className="px-3 py-2">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {teachers.map((t) => (
                             <tr key={t.teacherId} className="text-center border-t hover:bg-gray-50 transition-colors">
-                                <td>{t.name}</td>
-                                <td>{t.subject}</td>
-                                <td>
+                                <td className="px-3 py-2">{t.name}</td>
+                                <td className="px-3 py-2">{t.subject}</td>
+                                <td className="px-3 py-2">
                                     <button
-                                        className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded"
+                                        className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded text-sm"
                                         onClick={() => {
                                             setRemoveTeacherId(t.teacherId);
                                             setShowDeleteModal(true);

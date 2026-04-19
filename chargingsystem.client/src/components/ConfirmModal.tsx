@@ -22,10 +22,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
     return (
         <div className="modal-overlay">
-            <div className="bg-white p-6 rounded shadow w-80">
-                <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
+            <div className="bg-white p-4 sm:p-6 rounded shadow w-[90%] sm:w-80">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-800">{title}</h3>
 
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-4 sm:mb-6">
                     {message}
                 </p>
 

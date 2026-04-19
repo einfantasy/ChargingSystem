@@ -38,12 +38,12 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800">
+        <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800">
             <form
                 onSubmit={handleSubmit}
-                className="w-full max-w-sm p-8 rounded-2xl bg-white/20 backdrop-blur-lg shadow-xl border border-white/30"
+                className="w-full max-w-sm sm:max-w-md md:max-w-lg p-6 sm:p-8 md:p-10 rounded-2xl bg-white/20 backdrop-blur-lg shadow-xl border border-white/30"
             >
-                <h2 className="text-2xl font-bold text-center text-white mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-6 md:mb-8">
                     系统登录
                 </h2>
 
@@ -52,14 +52,14 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 )}
 
                 {/* 用户名 */}
-                <div className="mb-4">
+                <div className="mb-4 md:mb-6">
                     <input
                         type="text"
                         placeholder="用户名"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
-                        className="w-full px-4 py-2 rounded-lg
+                        className="w-full px-4 py-2 md:py-3 rounded-lg
 
     bg-white/5
     text-white placeholder:text-gray-400
@@ -77,14 +77,14 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 </div>
 
                 {/* 密码 */}
-                <div className="mb-6">
+                <div className="mb-6 md:mb-8">
                     <input
                         type="password"
                         placeholder="密码"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="w-full px-4 py-2 rounded-lg
+                        className="w-full px-4 py-2 md:py-3 rounded-lg
 
     bg-white/5
     text-white placeholder:text-gray-400

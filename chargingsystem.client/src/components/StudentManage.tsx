@@ -107,17 +107,17 @@ export default function StudentManagePage({ students, fetchStudents }: { student
 
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-4">学生管理</h2>
+            <h2 className="text-xl lg:text-2xl font-bold mb-4">学生管理</h2>
 
             {/* 工具栏 */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                 <input
                     type="text"
                     placeholder="搜索姓名..."
                     className="
                             bg-slate-800/50 text-white 
                             border border-white/20 rounded 
-                            p-2 w-64 
+                            p-2 w-full sm:w-48 md:w-64 
                             placeholder:text-slate-400 
                             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                             hover:border-white/40 transition-colors
@@ -127,44 +127,43 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                 />
                 <button
                     onClick={() => { setShowModal(true); setName(""); }}
-                    className="bg-blue-500 text-white px-4 py-2 rounded btn-gradient"
+                    className="bg-blue-500 text-white px-4 py-2 rounded btn-gradient w-full sm:w-auto"
                 >
                     + 新增学生
                 </button>
             </div>
 
             {/* 学生列表 */}
-            <div className="overflow-hidden border rounded-lg bg-white shadow-sm">
-                <table className="w-full bg-white shadow rounded">
+            <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
+                <table className="w-full bg-white shadow rounded min-w-[500px]">
                     <thead>
                         <tr>
-                            <th>姓名</th>
-                            <th>操作</th>
+                            <th className="px-3 py-2">姓名</th>
+                            <th className="px-3 py-2">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredStudents.length > 0 ? (
                             filteredStudents.map((s) => (
                                 <tr key={s.studentId} className="text-center border-t hover:bg-gray-50 transition-colors">
-                                    <td>{s.name}</td>
-                                    <td>
-                                        <div className="flex space-x-4 justify-center">
-                                            <button className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded"
+                                    <td className="px-3 py-2">{s.name}</td>
+                                    <td className="px-3 py-2">
+                                        <div className="flex space-x-2 justify-center">
+                                            <button className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-sm"
                                                 onClick={() => {
                                                     setCurrentStudent(s);
                                                     setShowRechargeModal(true);
                                                     setHour(0); setPrice(0); setCost(0);
                                                 }}>充值</button>
-                                            <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded"
-                                                onClick={() => openRecordModal(s)}>充值记录</button>
-                                            {/*<button className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded">删除</button>*/}
+                                            <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm"
+                                                onClick={() => openRecordModal(s)}>记录</button>
                                         </div>
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={3} className="py-4 text-gray-500 text-center">暂无数据</td>
+                                <td colSpan={2} className="py-4 text-gray-500 text-center">暂无数据</td>
                             </tr>
                         )}
                     </tbody>
@@ -176,8 +175,8 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             {/* 1. 新增学生弹窗 */}
             {showModal && (
                 <div className={"modal-overlay"}>
-                    <div className="bg-white p-6 rounded shadow w-80">
-                        <h3 className="text-xl font-bold mb-4">新增学生</h3>
+                    <div className="bg-white p-4 sm:p-6 rounded shadow w-[90%] sm:w-80 max-h-[80vh] overflow-y-auto">
+                        <h3 className="text-lg sm:text-xl font-bold mb-4">新增学生</h3>
                         <input
                             placeholder="请输入姓名"
                             className="border p-2 rounded w-full mb-4"
@@ -197,9 +196,9 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             {/* 2. 充值弹窗 */}
             {showRechargeModal && currentStudent && (
                 <div className={"modal-overlay"}>
-                    <div className="bg-white p-6 rounded shadow w-80">
-                        <h3 className="text-xl font-bold mb-4">充值 - {currentStudent.name}</h3>
-                        <div className="flex flex-col gap-4">
+                    <div className="bg-white p-4 sm:p-6 rounded shadow w-[90%] sm:w-80 max-h-[80vh] overflow-y-auto">
+                        <h3 className="text-lg sm:text-xl font-bold mb-4">充值 - {currentStudent.name}</h3>
+                        <div className="flex flex-col gap-3 sm:gap-4">
                             {[
                                 { label: "充值课时", value: hour, setter: setHour, tip: "请输入购买的课时数" },
                                 { label: "课时单价", value: price, setter: setPrice, tip: "请输入课时单价" },
@@ -213,7 +212,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                                 </div>
                             ))}
                         </div>
-                        <div className="flex justify-end gap-2 mt-6">
+                        <div className="flex justify-end gap-2 mt-4 sm:mt-6">
                             <button onClick={() => setShowRechargeModal(false)} className="px-3 py-1 border rounded">取消</button>
                             <button onClick={handleRechargeConfirm} disabled={loading} className="bg-blue-500 text-white px-3 py-1 rounded">
                                 {loading ? "提交中..." : "确认"}
@@ -226,12 +225,12 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             {/* 3. 充值记录弹窗 */}
             {showRecordModal && (
                 <div className={"modal-overlay"}>
-                    <div className="bg-white p-6 rounded-lg shadow-xl w-3/4 max-w-2xl">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[95%] sm:w-3/4 max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-bold">{currentStudent?.name} 的充值记录</h3>
                             <button onClick={() => setShowRecordModal(false)} className="text-gray-500 hover:text-black">✕</button>
                         </div>
-                        <div className="max-h-96 overflow-y-auto">
+                        <div className="overflow-y-auto flex-1">
                             <table className="w-full text-left border-collapse">
                                 <thead className="sticky top-0 bg-gray-100">
                                     <tr>
@@ -253,7 +252,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                                 </tbody>
                             </table>
                         </div>
-                        <div className="mt-6 flex justify-end">
+                        <div className="mt-4 flex justify-end">
                             <button onClick={() => setShowRecordModal(false)} className="px-4 py-1 border rounded hover:bg-gray-50">关闭</button>
                         </div>
                     </div>
