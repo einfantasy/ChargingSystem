@@ -32,6 +32,8 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     const [activeMenu, setActiveMenu] = useState("dashboard");
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [showWarning, setShowWarning] = useState(false);
+    const [warningMessage, setWarningMessage] = useState("");
 
     // --- 2. 业务数据状态 ---
     const [students, setStudents] = useState<Student[]>([]);
@@ -86,7 +88,53 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         }
     };
 
-    // --- 4. 副作用 ---
+    // --- 4. Token 检查逻辑 ---
+    const refreshToken = async () => {
+        try {
+            const response = await fetch("/api/auth/refresh", {
+                method: "POST",
+                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("expiresAt", data.expiresAt);
+                setShowWarning(false);
+            } else {
+                onLogout();
+            }
+        } catch {
+            onLogout();
+        }
+    };
+
+    const checkTokenStatus = () => {
+        const expiresAt = localStorage.getItem("expiresAt");
+        if (!expiresAt) {
+            onLogout();
+            return;
+        }
+
+        const expiryTime = new Date(expiresAt).getTime();
+        const now = Date.now();
+        const timeLeft = expiryTime - now;
+
+        if (timeLeft <= 0) {
+            onLogout();
+            return;
+        }
+
+        const fiveMinutes = 5 * 60 * 1000;
+        if (timeLeft <= fiveMinutes) {
+            const minsLeft = Math.ceil(timeLeft / 60000);
+            setWarningMessage(`登录将在 ${minsLeft} 分钟后过期，是否继续？`);
+            setShowWarning(true);
+        } else {
+            setShowWarning(false);
+        }
+    };
+
+    // --- 5. 副作用 ---
     useEffect(() => {
         const load = async () => {
             await fetchStudents();
@@ -98,10 +146,28 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
         if (isTokenExpired()) {
             onLogout();
+            return;
         }
+
+        checkTokenStatus();
+
+        const tokenCheckInterval = setInterval(() => {
+            checkTokenStatus();
+        }, 60000);
+
+        return () => clearInterval(tokenCheckInterval);
     }, [onLogout]);
 
-    // --- 5. 配置项 ---
+    const handleRefreshToken = async () => {
+        await refreshToken();
+        setShowWarning(false);
+    };
+
+    const handleContinue = () => {
+        handleRefreshToken();
+    };
+
+    // --- 6. 配置项 ---
     const menuItems = [
         { key: "dashboard", label: "首页", icon: <LayoutDashboard size={22} /> },
         { key: "students", label: "学生管理", icon: <Users size={22} /> },
@@ -111,6 +177,29 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
     return (
         <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 text-white">
+            {/* Token 过期警告弹窗 */}
+            {showWarning && (
+                <div className="modal-overlay">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[90%] sm:w-96 max-h-[80vh] overflow-y-auto">
+                        <h3 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">登录即将过期</h3>
+                        <p className="text-gray-600 mb-6">{warningMessage}</p>
+                        <div className="flex justify-end gap-2">
+                            <button
+                                onClick={onLogout}
+                                className="px-4 py-2 border rounded hover:bg-gray-50"
+                            >
+                                退出登录
+                            </button>
+                            <button
+                                onClick={handleContinue}
+                                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                            >
+                                继续使用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="flex h-screen">
 
                 {/* 移动端菜单遮罩 */}

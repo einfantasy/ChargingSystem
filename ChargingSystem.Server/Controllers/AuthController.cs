@@ -32,30 +32,66 @@ namespace ChargingSystem.Server.Controllers
                 return Unauthorized("密码错误");
             }
 
-            //// 设置过期时间，例如 30 分钟后
-            //var expiresInMinutes = 30;
-            //var expirationTime = DateTime.UtcNow.AddMinutes(expiresInMinutes);
-
-            //return Ok(new
-            //{
-            //    token = "fake-jwt-token",
-            //    username = model.Username,
-            //    // 将过期时间以 ISO 格式字符串或 Unix 时间戳返回
-            //    expiresAt = expirationTime,
-            //    expiresIn = expiresInMinutes * 60 // 以秒为单位，方便前端计算
-            //});
-
             var expiresInMinutes = 30;
             var expirationTime = DateTime.UtcNow.AddMinutes(expiresInMinutes);
 
-            // 密钥（建议放配置文件）
+            var (tokenString, _) = GenerateJwtToken(model.Username, expirationTime);
+
+            return Ok(new
+            {
+                token = tokenString,
+                username = model.Username,
+                expiresAt = expirationTime,
+                expiresIn = expiresInMinutes * 60
+            });
+        }
+
+        [HttpPost("refresh")]
+        public IActionResult RefreshToken()
+        {
+            var currentToken = Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+            if (string.IsNullOrEmpty(currentToken))
+            {
+                return Unauthorized("无效的 token");
+            }
+
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(currentToken);
+                var username = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+                if (string.IsNullOrEmpty(username))
+                {
+                    return Unauthorized("无效的用户信息");
+                }
+
+                var expiresInMinutes = 30;
+                var expirationTime = DateTime.UtcNow.AddMinutes(expiresInMinutes);
+                var (newToken, _) = GenerateJwtToken(username, expirationTime);
+
+                return Ok(new
+                {
+                    token = newToken,
+                    username = username,
+                    expiresAt = expirationTime,
+                    expiresIn = expiresInMinutes * 60
+                });
+            }
+            catch
+            {
+                return Unauthorized("Token 刷新失败");
+            }
+        }
+
+        private (string token, DateTime expiry) GenerateJwtToken(string username, DateTime expirationTime)
+        {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("{D9277D00-D1FC-4411-B23A-4C2571CC7C6C}"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // 载荷（用户信息）
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, model.Username)
+                new Claim(ClaimTypes.Name, username)
             };
 
             var token = new JwtSecurityToken(
@@ -67,14 +103,7 @@ namespace ChargingSystem.Server.Controllers
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return Ok(new
-            {
-                token = tokenString, // ✅ 真 token
-                username = model.Username,
-                expiresAt = expirationTime,
-                expiresIn = expiresInMinutes * 60
-            });
+            return (tokenString, expirationTime);
         }
     }
 
