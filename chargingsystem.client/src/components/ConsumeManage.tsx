@@ -252,27 +252,29 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
             {showConsumeModal && (
                 <div className="modal-overlay">
                     <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[95%] sm:w-3/4 max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold">课时记录 - {currentBalance?.studentName}</h3>
-                            <button onClick={() => setShowConsumeModal(false)} className="text-gray-500 hover:text-black">✕</button>
+                        <div className="flex justify-between items-center mb-4 min-w-0">
+                            <h3 className="text-lg font-bold truncate">课时记录 - {currentBalance?.studentName}</h3>
+                            <button onClick={() => setShowConsumeModal(false)} className="text-gray-500 hover:text-black flex-shrink-0">✕</button>
                         </div>
 
                         <div className="overflow-y-auto flex-1">
-                            <div className="flex flex-col mt-3 mb-3">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1.5 cursor-pointer">
-                                    <CalendarDays size={16} className="text-blue-500" />
-                                    <span>选择查询月份</span>
-                                </label>
-                                <input
-                                    type="month"
-                                    className="w-full md:w-64 border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer text-gray-700 bg-white"
-                                    onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                                    value={queryDate}
-                                    onChange={(e) => {
-                                        setQueryDate(e.target.value);
-                                        fetchConsumeRecords(currentBalance!.rechargeId, e.target.value);
-                                    }}
-                                />
+                            <div className="overflow-x-auto max-w-full">
+                                <div className="flex flex-col mt-3 mb-3 w-fit">
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1.5 cursor-pointer">
+                                        <CalendarDays size={16} className="text-blue-500" />
+                                        <span>选择查询月份</span>
+                                    </label>
+                                    <input
+                                        type="month"
+                                        className="w-full md:w-64 border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer text-gray-700 bg-white"
+                                        onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                                        value={queryDate}
+                                        onChange={(e) => {
+                                            setQueryDate(e.target.value);
+                                            fetchConsumeRecords(currentBalance!.rechargeId, e.target.value);
+                                        }}
+                                    />
+                                </div>
                             </div>
 
                             <div className="overflow-x-auto">
