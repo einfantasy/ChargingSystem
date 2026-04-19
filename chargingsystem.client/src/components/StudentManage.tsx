@@ -135,7 +135,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
 
             {/* 学生列表 */}
             <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
-                <table className="w-full bg-white shadow rounded min-w-[500px]">
+                <table className="w-full bg-white shadow rounded">
                     <thead>
                         <tr>
                             <th className="px-3 py-2">姓名</th>

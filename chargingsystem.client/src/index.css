@@ -147,7 +147,6 @@ th, td {
 @media (max-width: 640px) {
     th, td {
         font-size: 0.75rem;
-        padding: 0.375rem;
     }
 }
 
