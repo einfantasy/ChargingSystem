@@ -10,18 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<TeacherService>();
 builder.Services.AddScoped<RechargeService>();
 builder.Services.AddScoped<ConsumeService>();
-builder.Services.AddScoped<StudentCourse>();
 builder.Services.AddScoped<StudentCourseService>();
 builder.Services.AddScoped<UtilService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// JWT 配置（从 appsettings.json 读取）
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var jwtKey = jwtSettings["Key"]!;
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -30,31 +34,34 @@ builder.Services.AddAuthentication("Bearer")
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true, // ✅ 自动检查过期时间
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-
-            ValidIssuer = "ChargingSystem",
-            ValidAudience = "ChargingSystem",
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("{D9277D00-D1FC-4411-B23A-4C2571CC7C6C}"))
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    await scope.ServiceProvider.GetRequiredService<UserService>().SeedDefaultAdminAsync();
+}
+
+// 全局异常处理
+app.UseExceptionHandler("/error");
+
 app.UseDefaultFiles();
 app.MapStaticAssets();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.MapFallbackToFile("/index.html");
 
 app.Run();

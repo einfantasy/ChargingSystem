@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace ChargingSystem.Server.Controllers
 {
@@ -10,10 +8,14 @@ namespace ChargingSystem.Server.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
+        private readonly JwtService _jwtService;
+        private readonly PasswordService _passwordService;
         private readonly UserService _userService;
 
-        public AuthController(UserService userService)
+        public AuthController(JwtService jwtService, PasswordService passwordService, UserService userService)
         {
+            _jwtService = jwtService;
+            _passwordService = passwordService;
             _userService = userService;
         }
 
@@ -27,22 +29,19 @@ namespace ChargingSystem.Server.Controllers
                 return Unauthorized("用户不存在");
             }
 
-            if (user.Password != model.Password)
+            if (!_passwordService.VerifyPassword(model.Password, user.Password))
             {
                 return Unauthorized("密码错误");
             }
 
-            var expiresInMinutes = 30;
-            var expirationTime = DateTime.UtcNow.AddMinutes(expiresInMinutes);
-
-            var (tokenString, _) = GenerateJwtToken(model.Username, expirationTime);
+            var (tokenString, expiresAt) = _jwtService.GenerateToken(model.Username);
 
             return Ok(new
             {
                 token = tokenString,
                 username = model.Username,
-                expiresAt = expirationTime,
-                expiresIn = expiresInMinutes * 60
+                expiresAt = expiresAt,
+                expiresIn = 30 * 60
             });
         }
 
@@ -66,44 +65,20 @@ namespace ChargingSystem.Server.Controllers
                     return Unauthorized("无效的用户信息");
                 }
 
-                var expiresInMinutes = 30;
-                var expirationTime = DateTime.UtcNow.AddMinutes(expiresInMinutes);
-                var (newToken, _) = GenerateJwtToken(username, expirationTime);
+                var (newToken, expiresAt) = _jwtService.GenerateToken(username);
 
                 return Ok(new
                 {
                     token = newToken,
                     username = username,
-                    expiresAt = expirationTime,
-                    expiresIn = expiresInMinutes * 60
+                    expiresAt = expiresAt,
+                    expiresIn = 30 * 60
                 });
             }
             catch
             {
                 return Unauthorized("Token 刷新失败");
             }
-        }
-
-        private (string token, DateTime expiry) GenerateJwtToken(string username, DateTime expirationTime)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("{D9277D00-D1FC-4411-B23A-4C2571CC7C6C}"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, username)
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: "ChargingSystem",
-                audience: "ChargingSystem",
-                claims: claims,
-                expires: expirationTime,
-                signingCredentials: creds
-            );
-
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            return (tokenString, expirationTime);
         }
     }
 
