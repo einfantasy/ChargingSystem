@@ -134,28 +134,28 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             </div>
 
             {/* 学生列表 */}
-            <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
-                <table className="w-full bg-white shadow rounded">
+            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
+                <table className="w-full">
                     <thead>
-                        <tr>
-                            <th className="px-3 py-2">姓名</th>
-                            <th className="px-3 py-2">操作</th>
+                        <tr className="bg-white/10">
+                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">姓名</th>
+                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredStudents.length > 0 ? (
                             filteredStudents.map((s) => (
-                                <tr key={s.studentId} className="text-center border-t hover:bg-gray-50 transition-colors">
-                                    <td className="px-3 py-2">{s.name}</td>
-                                    <td className="px-3 py-2">
+                                <tr key={s.studentId} className="text-center border-t border-white/10 hover:bg-white/10 transition-colors">
+                                    <td className="px-4 py-3 text-white">{s.name}</td>
+                                    <td className="px-4 py-3">
                                         <div className="flex space-x-2 justify-center">
-                                            <button className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-sm"
+                                            <button className="bg-green-500/80 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
                                                 onClick={() => {
                                                     setCurrentStudent(s);
                                                     setShowRechargeModal(true);
                                                     setHour(0); setPrice(0); setCost(0);
                                                 }}>充值</button>
-                                            <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm"
+                                            <button className="bg-blue-500/80 hover:bg-blue-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
                                                 onClick={() => openRecordModal(s)}>记录</button>
                                         </div>
                                     </td>
@@ -163,7 +163,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={2} className="py-4 text-gray-500 text-center">暂无数据</td>
+                                <td colSpan={2} className="py-6 text-slate-400 text-center">暂无数据</td>
                             </tr>
                         )}
                     </tbody>

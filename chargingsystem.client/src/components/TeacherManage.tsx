@@ -167,23 +167,23 @@ export default function TeacherManagePage({
             </div>
 
             {/* 数据表格 */}
-            <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
-                <table className="w-full bg-white shadow rounded">
+            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
+                <table className="w-full">
                     <thead>
-                        <tr>
-                            <th className="px-3 py-2">姓名</th>
-                            <th className="px-3 py-2">学科</th>
-                            <th className="px-3 py-2">操作</th>
+                        <tr className="bg-white/10">
+                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">姓名</th>
+                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">学科</th>
+                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {teachers.map((t) => (
-                            <tr key={t.teacherId} className="text-center border-t hover:bg-gray-50 transition-colors">
-                                <td className="px-3 py-2">{t.name}</td>
-                                <td className="px-3 py-2">{t.subject}</td>
-                                <td className="px-3 py-2">
+                            <tr key={t.teacherId} className="text-center border-t border-white/10 hover:bg-white/10 transition-colors">
+                                <td className="px-4 py-3 text-white">{t.name}</td>
+                                <td className="px-4 py-3 text-slate-300">{t.subject}</td>
+                                <td className="px-4 py-3">
                                     <button
-                                        className="bg-red-500 hover:bg-red-800 text-white px-2 py-1 rounded text-sm"
+                                        className="bg-red-500/80 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
                                         onClick={() => {
                                             setRemoveTeacherId(t.teacherId);
                                             setShowDeleteModal(true);
@@ -196,7 +196,7 @@ export default function TeacherManagePage({
                         ))}
                         {teachers.length === 0 && (
                             <tr>
-                                <td colSpan={3} className="py-4 text-gray-500 text-center">暂无数据</td>
+                                <td colSpan={3} className="py-6 text-slate-400 text-center">暂无数据</td>
                             </tr>
                         )}
                     </tbody>

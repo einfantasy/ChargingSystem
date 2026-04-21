@@ -330,9 +330,9 @@ function Dashboard({ dashboardInfo }: { dashboardInfo: DashboardInfo; }) {
 // --- 子组件：卡片 ---
 function Card({ title, value }: { title: string; value: string }) {
     return (
-        <div className="bg-white p-3 lg:p-4 rounded shadow transition-hover hover:shadow-md">
-            <div className="text-gray-500 text-xs lg:text-sm">{title}</div>
-            <div className="text-lg lg:text-xl font-bold text-slate-800">{value}</div>
+        <div className="bg-white/10 backdrop-blur-md border border-white/10 p-4 lg:p-5 rounded-xl shadow-lg transition-all duration-300 hover:bg-white/20 hover:shadow-xl hover:scale-[1.02]">
+            <div className="text-purple-300 text-xs lg:text-sm font-medium mb-1">{title}</div>
+            <div className="text-xl lg:text-2xl font-bold text-white">{value}</div>
         </div>
     );
 }
