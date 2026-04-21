@@ -140,20 +140,20 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                 <table className="w-full">
                     <thead>
                         <tr className="bg-white/10">
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">姓名</th>
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">剩余学时</th>
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">成本价</th>
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">操作</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">姓名</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">剩余学时</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">成本价</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredBalances.length > 0 ? (
                             filteredBalances.map((b) => (
-                                <tr key={b.rechargeId} className="text-center border-t border-white/10 hover:bg-white/10 transition-colors">
-                                    <td className="px-4 py-3 text-white">{b.studentName}</td>
-                                    <td className="px-4 py-3 text-slate-300">{b.remainingHours}</td>
-                                    <td className="px-4 py-3 text-slate-300">{b.cost}</td>
-                                    <td className="px-4 py-3">
+                                <tr key={b.rechargeId} className="border-t border-white/10 hover:bg-white/10 transition-colors">
+                                    <td className="px-4 py-3 text-center text-white">{b.studentName}</td>
+                                    <td className="px-4 py-3 text-center text-slate-300">{b.remainingHours}</td>
+                                    <td className="px-4 py-3 text-center text-slate-300">{b.cost}</td>
+                                    <td className="px-4 py-3 text-center">
                                         <div className="flex space-x-2 justify-center">
                                             <button
                                                 className="bg-green-500/80 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
@@ -194,13 +194,13 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
             {/* 扣课弹窗 */}
             {showModal && (
                 <div className="modal-overlay">
-                    <div className="bg-white p-4 sm:p-6 rounded shadow w-[90%] sm:w-80 max-h-[80vh] overflow-y-auto">
-                        <h3 className="text-lg sm:text-xl font-bold mb-4">扣课 - {currentBalance?.studentName}</h3>
+                    <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl shadow-2xl w-[90%] sm:w-96 border border-white/20">
+                        <h3 className="text-xl font-bold mb-5 text-gray-900">扣课 - {currentBalance?.studentName}</h3>
 
-                        <div className="flex flex-col mb-3">
-                            <span className="text-sm text-gray-500 mb-1">请选择老师</span>
+                        <div className="flex flex-col mb-4">
+                            <span className="text-sm text-gray-600 mb-2">请选择老师</span>
                             <select
-                                className="border p-2 rounded"
+                                className="bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800"
                                 value={selectedTeacher}
                                 onChange={(e) => setSelectedTeacher(e.target.value)}
                             >
@@ -210,11 +210,11 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                             </select>
                         </div>
 
-                        <div className="flex flex-col mb-3">
-                            <span className="text-sm text-gray-500 mb-1">请输入要扣除的课时数</span>
+                        <div className="flex flex-col mb-4">
+                            <span className="text-sm text-gray-600 mb-2">请输入要扣除的课时数</span>
                             <input
                                 type="number"
-                                className="border p-2 rounded"
+                                className="bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800"
                                 value={hour === 1 ? '' : hour}
                                 placeholder="1"
                                 onBlur={(e) => {
@@ -234,26 +234,26 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                             />
                         </div>
 
-                        <div className="flex flex-col mb-3">
-                            <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1.5 cursor-pointer">
-                                <CalendarDays size={16} className="text-blue-500" />
+                        <div className="flex flex-col mb-4">
+                            <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-2 cursor-pointer">
+                                <CalendarDays size={16} className="text-purple-500" />
                                 <span>选择扣课日期</span>
                             </label>
                             <input
                                 type="date"
-                                className="border border-gray-300 p-2 rounded-lg outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer text-gray-700"
+                                className="bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800 cursor-pointer"
                                 onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
                             />
                         </div>
 
-                        <div className="flex justify-end gap-2 mt-4">
-                            <button onClick={() => setShowModal(false)} className="px-3 py-1 border rounded">取消</button>
+                        <div className="flex justify-end gap-3 mt-5">
+                            <button onClick={() => setShowModal(false)} className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50/80 transition-colors">取消</button>
                             <button
                                 onClick={handleConfirm}
                                 disabled={loading}
-                                className="bg-blue-500 text-white px-3 py-1 rounded"
+                                className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-lg transition-all"
                             >
                                 {loading ? "提交中..." : "确认"}
                             </button>
@@ -265,22 +265,22 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
             {/* 课时记录弹窗 */}
             {showConsumeModal && (
                 <div className="modal-overlay">
-                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[95%] sm:w-3/4 max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+                    <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl shadow-2xl w-[95%] sm:w-3/4 max-w-2xl max-h-[80vh] overflow-hidden flex flex-col border border-white/20">
                         <div className="flex justify-between items-center mb-4 min-w-0">
-                            <h3 className="text-lg font-bold truncate">课时记录 - {currentBalance?.studentName}</h3>
-                            <button onClick={() => setShowConsumeModal(false)} className="text-gray-500 hover:text-black flex-shrink-0">✕</button>
+                            <h3 className="text-xl font-bold truncate text-gray-900">课时记录 - {currentBalance?.studentName}</h3>
+                            <button onClick={() => setShowConsumeModal(false)} className="text-gray-500 hover:text-gray-700 flex-shrink-0 p-1">✕</button>
                         </div>
 
                         <div className="overflow-y-auto flex-1">
                             <div className="overflow-x-auto max-w-full">
                                 <div className="flex flex-col mt-3 mb-3 w-fit">
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1.5 cursor-pointer">
-                                        <CalendarDays size={16} className="text-blue-500" />
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-2 cursor-pointer">
+                                        <CalendarDays size={16} className="text-purple-500" />
                                         <span>选择查询月份</span>
                                     </label>
                                     <input
                                         type="month"
-                                        className="w-full md:w-64 border border-gray-300 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer text-gray-700 bg-white"
+                                        className="w-full md:w-64 bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800 cursor-pointer"
                                         onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
                                         value={queryDate}
                                         onChange={(e) => {
@@ -291,31 +291,31 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
+                            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                                <table className="w-full text-left">
                                     <thead>
-                                        <tr className="bg-gray-100">
-                                            <th className="p-2 border">日期</th>
-                                            <th className="p-2 border">教师</th>
-                                            <th className="p-2 border">科目</th>
-                                            <th className="p-2 border">课时</th>
+                                        <tr className="bg-white/10">
+                                            <th className="p-3 text-left text-purple-300 font-medium text-sm">日期</th>
+                                            <th className="p-3 text-left text-purple-300 font-medium text-sm">教师</th>
+                                            <th className="p-3 text-left text-purple-300 font-medium text-sm">科目</th>
+                                            <th className="p-3 text-left text-purple-300 font-medium text-sm">课时</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {consumeRecords
                                             .filter(r => r.rechargeId === currentBalance?.rechargeId && (queryDate ? r.date.startsWith(queryDate) : true))
                                             .map(record => (
-                                                <tr key={record.id} className="border-t">
-                                                    <td className="p-2 border">{record.date.substring(0, 10)}</td>
-                                                    <td className="p-2 border">{record.teacherName}</td>
-                                                    <td className="p-2 border">{record.subject}</td>
-                                                    <td className="p-2 border">{record.hour}</td>
+                                                <tr key={record.id} className="border-t border-white/10">
+                                                    <td className="p-3 text-left text-gray-400">{record.date.substring(0, 10)}</td>
+                                                    <td className="p-3 text-left text-gray-400">{record.teacherName}</td>
+                                                    <td className="p-3 text-left text-gray-400">{record.subject}</td>
+                                                    <td className="p-3 text-left text-gray-400">{record.hour}</td>
                                                 </tr>
                                             ))
                                         }
                                         {consumeRecords.filter(r => r.rechargeId === currentBalance?.rechargeId && (queryDate ? r.date.startsWith(queryDate) : true)).length === 0 && (
                                             <tr>
-                                                <td colSpan={4} className="p-4 text-center text-gray-400">该月份暂无课时记录</td>
+                                                <td colSpan={4} className="p-6 text-center text-slate-400">该月份暂无课时记录</td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -324,7 +324,7 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                         </div>
 
                         <div className="mt-4 flex justify-end">
-                            <button onClick={() => setShowConsumeModal(false)} className="px-3 py-1 border rounded">关闭</button>
+                            <button onClick={() => setShowConsumeModal(false)} className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50/80 transition-colors">关闭</button>
                         </div>
                     </div>
                 </div>

@@ -100,40 +100,40 @@ export default function TeacherManagePage({
         if (!showAddModal) return null;
         return (
             <div className="modal-overlay">
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[90%] sm:w-96 max-h-[80vh] overflow-y-auto">
-                    <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-800">新增教师</h3>
-                    <div className="space-y-3 sm:space-y-4">
+                <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl shadow-2xl w-[90%] sm:w-96 border border-white/20">
+                    <h3 className="text-xl font-bold mb-5 text-gray-900">新增教师</h3>
+                    <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">教师姓名</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">教师姓名</label>
                             <input
                                 placeholder="请输入姓名"
-                                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-gray-800 placeholder:text-gray-400"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">教授学科</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">教授学科</label>
                             <input
                                 placeholder="请输入学科"
-                                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-gray-800 placeholder:text-gray-400"
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
                             />
                         </div>
                     </div>
-                    <div className="flex justify-end gap-2 sm:gap-3 mt-6 sm:mt-8">
+                    <div className="flex justify-end gap-3 mt-6">
                         <button
                             disabled={loading}
                             onClick={() => setShowAddModal(false)}
-                            className="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50"
+                            className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50/80 transition-colors"
                         >
                             取消
                         </button>
                         <button
                             disabled={loading}
                             onClick={handleAddTeacher}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded transition-colors"
+                            className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-lg transition-all"
                         >
                             {loading ? "提交中..." : "确认"}
                         </button>
@@ -171,17 +171,17 @@ export default function TeacherManagePage({
                 <table className="w-full">
                     <thead>
                         <tr className="bg-white/10">
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">姓名</th>
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">学科</th>
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">操作</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">姓名</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">学科</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {teachers.map((t) => (
-                            <tr key={t.teacherId} className="text-center border-t border-white/10 hover:bg-white/10 transition-colors">
-                                <td className="px-4 py-3 text-white">{t.name}</td>
-                                <td className="px-4 py-3 text-slate-300">{t.subject}</td>
-                                <td className="px-4 py-3">
+                            <tr key={t.teacherId} className="border-t border-white/10 hover:bg-white/10 transition-colors">
+                                <td className="px-4 py-3 text-center text-white">{t.name}</td>
+                                <td className="px-4 py-3 text-center text-slate-300">{t.subject}</td>
+                                <td className="px-4 py-3 text-center">
                                     <button
                                         className="bg-red-500/80 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
                                         onClick={() => {

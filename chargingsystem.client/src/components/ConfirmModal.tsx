@@ -22,25 +22,25 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
     return (
         <div className="modal-overlay">
-            <div className="bg-white p-4 sm:p-6 rounded shadow w-[90%] sm:w-80">
-                <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-800">{title}</h3>
+            <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl shadow-2xl w-[90%] sm:w-96 border border-white/20">
+                <h3 className="text-xl font-bold mb-3 text-gray-900">{title}</h3>
 
-                <p className="text-gray-600 mb-4 sm:mb-6">
+                <p className="text-gray-600 mb-6">
                     {message}
                 </p>
 
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-3">
                     <button
                         onClick={onCancel}
                         disabled={loading}
-                        className="px-4 py-2 border rounded hover:bg-gray-50 transition-colors disabled:opacity-50"
+                        className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50/80 transition-colors disabled:opacity-50"
                     >
                         取消
                     </button>
                     <button
                         onClick={onConfirm}
                         disabled={loading}
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-colors disabled:opacity-50 flex items-center"
+                        className="px-5 py-2.5 bg-red-500/90 hover:bg-red-600 text-white font-medium rounded-lg transition-all disabled:opacity-50 flex items-center"
                     >
                         {loading ? (
                             <>

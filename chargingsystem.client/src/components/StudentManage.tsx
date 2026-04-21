@@ -138,16 +138,16 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                 <table className="w-full">
                     <thead>
                         <tr className="bg-white/10">
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">姓名</th>
-                            <th className="px-4 py-3 text-left text-purple-300 font-medium text-sm">操作</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">姓名</th>
+                            <th className="px-4 py-3 text-center text-purple-300 font-medium text-sm">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredStudents.length > 0 ? (
                             filteredStudents.map((s) => (
-                                <tr key={s.studentId} className="text-center border-t border-white/10 hover:bg-white/10 transition-colors">
-                                    <td className="px-4 py-3 text-white">{s.name}</td>
-                                    <td className="px-4 py-3">
+                                <tr key={s.studentId} className="border-t border-white/10 hover:bg-white/10 transition-colors">
+                                    <td className="px-4 py-3 text-center text-white">{s.name}</td>
+                                    <td className="px-4 py-3 text-center">
                                         <div className="flex space-x-2 justify-center">
                                             <button className="bg-green-500/80 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
                                                 onClick={() => {
@@ -175,17 +175,17 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             {/* 1. 新增学生弹窗 */}
             {showModal && (
                 <div className={"modal-overlay"}>
-                    <div className="bg-white p-4 sm:p-6 rounded shadow w-[90%] sm:w-80 max-h-[80vh] overflow-y-auto">
-                        <h3 className="text-lg sm:text-xl font-bold mb-4">新增学生</h3>
+                    <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl shadow-2xl w-[90%] sm:w-96 border border-white/20">
+                        <h3 className="text-xl font-bold mb-5 text-gray-900">新增学生</h3>
                         <input
                             placeholder="请输入姓名"
-                            className="border p-2 rounded w-full mb-4"
+                            className="w-full bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800 placeholder:text-gray-400 mb-4"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                        <div className="flex justify-end gap-2">
-                            <button onClick={() => setShowModal(false)} className="px-3 py-1 border rounded">取消</button>
-                            <button onClick={handleAddConfirm} disabled={loading} className="bg-blue-500 text-white px-3 py-1 rounded">
+                        <div className="flex justify-end gap-3">
+                            <button onClick={() => setShowModal(false)} className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50/80 transition-colors">取消</button>
+                            <button onClick={handleAddConfirm} disabled={loading} className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-lg transition-all">
                                 {loading ? "提交中..." : "确认"}
                             </button>
                         </div>
@@ -196,18 +196,18 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             {/* 2. 充值弹窗 */}
             {showRechargeModal && currentStudent && (
                 <div className={"modal-overlay"}>
-                    <div className="bg-white p-4 sm:p-6 rounded shadow w-[90%] sm:w-80 max-h-[80vh] overflow-y-auto">
-                        <h3 className="text-lg sm:text-xl font-bold mb-4">充值 - {currentStudent.name}</h3>
-                        <div className="flex flex-col gap-3 sm:gap-4">
+                    <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl shadow-2xl w-[90%] sm:w-96 border border-white/20">
+                        <h3 className="text-xl font-bold mb-5 text-gray-900">充值 - {currentStudent.name}</h3>
+                        <div className="flex flex-col gap-4">
                             {[
                                 { label: "充值课时", val: hour, setVal: setHour, tip: "请输入购买的课时数" },
                                 { label: "课时单价", val: price, setVal: setPrice, tip: "请输入课时单价" },
                                 { label: "成本价", val: cost, setVal: setCost, tip: "请输入成本价" }
                             ].map((field, idx) => (
                                 <div key={idx} className="flex flex-col">
-                                    <span className="text-sm font-medium mb-1">{field.label}</span>
-                                    <span className="text-xs text-gray-400 mb-1">{field.tip}</span>
-                                    <input type="number" className="border p-2 rounded text-sm"
+                                    <span className="text-sm font-medium text-gray-700 mb-2">{field.label}</span>
+                                    <span className="text-xs text-gray-500 mb-1">{field.tip}</span>
+                                    <input type="number" className="bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800"
                                         value={field.val === 0 ? '' : field.val}
                                         placeholder="0"
                                         onBlur={(e) => {
@@ -221,9 +221,9 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                                 </div>
                             ))}
                         </div>
-                        <div className="flex justify-end gap-2 mt-4 sm:mt-6">
-                            <button onClick={() => setShowRechargeModal(false)} className="px-3 py-1 border rounded">取消</button>
-                            <button onClick={handleRechargeConfirm} disabled={loading} className="bg-blue-500 text-white px-3 py-1 rounded">
+                        <div className="flex justify-end gap-3 mt-5">
+                            <button onClick={() => setShowRechargeModal(false)} className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50/80 transition-colors">取消</button>
+                            <button onClick={handleRechargeConfirm} disabled={loading} className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-lg transition-all">
                                 {loading ? "提交中..." : "确认"}
                             </button>
                         </div>
@@ -234,35 +234,37 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             {/* 3. 充值记录弹窗 */}
             {showRecordModal && (
                 <div className={"modal-overlay"}>
-                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[95%] sm:w-3/4 max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+                    <div className="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl shadow-2xl w-[95%] sm:w-3/4 max-w-2xl max-h-[80vh] overflow-hidden flex flex-col border border-white/20">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold">{currentStudent?.name} 的充值记录</h3>
-                            <button onClick={() => setShowRecordModal(false)} className="text-gray-500 hover:text-black">✕</button>
+                            <h3 className="text-xl font-bold text-gray-900">{currentStudent?.name} 的充值记录</h3>
+                            <button onClick={() => setShowRecordModal(false)} className="text-gray-500 hover:text-gray-700 p-1">✕</button>
                         </div>
                         <div className="overflow-y-auto flex-1">
-                            <table className="w-full text-left border-collapse">
-                                <thead className="sticky top-0 bg-gray-100">
-                                    <tr>
-                                        <th className="p-2 border">日期</th>
-                                        <th className="p-2 border">金额</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rechargeRecords.length > 0 ? (
-                                        rechargeRecords.map(record => (
-                                            <tr key={record.id} className="border-t hover:bg-gray-50">
-                                                <td className="p-2 border">{record.date.substring(0, 10)}</td>
-                                                <td className="p-2 border font-medium text-green-600">￥{record.rechargeHour * record.rechargePrice}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr><td colSpan={2} className="p-8 text-center text-gray-400">暂无充值记录</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
+                            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                                <table className="w-full text-left">
+                                    <thead>
+                                        <tr className="bg-white/10">
+                                            <th className="p-3 text-left text-purple-300 font-medium text-sm">日期</th>
+                                            <th className="p-3 text-left text-purple-300 font-medium text-sm">金额</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {rechargeRecords.length > 0 ? (
+                                            rechargeRecords.map(record => (
+                                                <tr key={record.id} className="border-t border-white/10 hover:bg-white/10 transition-colors">
+                                                    <td className="p-3 text-left text-gray-400">{record.date.substring(0, 10)}</td>
+                                                    <td className="p-3 text-left font-medium text-green-400">￥{record.rechargeHour * record.rechargePrice}</td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr><td colSpan={2} className="p-8 text-center text-slate-400">暂无充值记录</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div className="mt-4 flex justify-end">
-                            <button onClick={() => setShowRecordModal(false)} className="px-4 py-1 border rounded hover:bg-gray-50">关闭</button>
+                            <button onClick={() => setShowRecordModal(false)} className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50/80 transition-colors">关闭</button>
                         </div>
                     </div>
                 </div>
