@@ -12,7 +12,8 @@ import {
     ChevronLeft,
     ChevronRight,
     LogOut,
-    School
+    School,
+    AlertTriangle
 } from 'lucide-react';
 
 interface HomeProps {
@@ -176,23 +177,29 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     ];
 
     return (
-        <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 text-white">
+        <div className="text-white">
             {/* Token 过期警告弹窗 */}
             {showWarning && (
                 <div className="modal-overlay">
-                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[90%] sm:w-96 max-h-[80vh] overflow-y-auto">
-                        <h3 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">登录即将过期</h3>
-                        <p className="text-gray-600 mb-6">{warningMessage}</p>
-                        <div className="flex justify-end gap-2">
+                    <div className="bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-2xl w-[90%] sm:w-[420px] border border-white/20">
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="p-3 bg-amber-100 rounded-full">
+                                <AlertTriangle className="w-6 h-6 text-amber-600" />
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">登录即将过期</h3>
+                        </div>
+                        <p className="text-gray-600 text-base sm:text-lg mb-6 leading-relaxed">{warningMessage}</p>
+                        <p className="text-sm text-gray-500 mb-6">为保护您的账号安全，请尽快保存当前工作进度。</p>
+                        <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
                             <button
                                 onClick={onLogout}
-                                className="px-4 py-2 border rounded hover:bg-gray-50"
+                                className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
                             >
                                 退出登录
                             </button>
                             <button
                                 onClick={handleContinue}
-                                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                                className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all"
                             >
                                 继续使用
                             </button>

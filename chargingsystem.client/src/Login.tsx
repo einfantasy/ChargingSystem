@@ -38,7 +38,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800">
+        <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-8 relative">
             <form
                 onSubmit={handleSubmit}
                 className="w-full max-w-sm sm:max-w-md md:max-w-lg p-6 sm:p-8 md:p-10 rounded-2xl bg-white/20 backdrop-blur-lg shadow-xl border border-white/30"

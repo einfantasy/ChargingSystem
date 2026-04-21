@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
 import { Login } from './Login';
 import { Home } from './Home';
+import { AnimatedBackground } from './components/AnimatedBackground';
 import type { User } from './types';
 
 function App() {
@@ -47,7 +48,9 @@ function App() {
     if (isChecking) return <div>正在加载应用...</div>;
 
     return (
-        <BrowserRouter>
+        <>
+            <AnimatedBackground />
+            <BrowserRouter>
             <Routes>
                 {/* 登录页：如果已登录，重定向到首页 */}
                 <Route path="/login" element={
@@ -62,7 +65,8 @@ function App() {
                 {/* 捕获所有其他路径 */}
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-        </BrowserRouter>
+            </BrowserRouter>
+        </>
     );
 }
 
