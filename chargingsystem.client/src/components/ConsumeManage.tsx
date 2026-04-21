@@ -136,7 +136,7 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                 </div>
             </div>
 
-            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
+            <div className="overflow-x-auto overflow-y-auto max-h-[60vh] rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
                 <table className="w-full">
                     <thead>
                         <tr className="bg-white/10">
@@ -291,7 +291,7 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                            <div className="overflow-x-auto overflow-y-auto max-h-[40vh] rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
                                 <table className="w-full text-left">
                                     <thead>
                                         <tr className="bg-white/10">

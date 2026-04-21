@@ -167,7 +167,7 @@ export default function TeacherManagePage({
             </div>
 
             {/* 数据表格 */}
-            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
+            <div className="overflow-x-auto overflow-y-auto max-h-[60vh] rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
                 <table className="w-full">
                     <thead>
                         <tr className="bg-white/10">

@@ -134,7 +134,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             </div>
 
             {/* 学生列表 */}
-            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
+            <div className="overflow-x-auto overflow-y-auto max-h-[60vh] rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg">
                 <table className="w-full">
                     <thead>
                         <tr className="bg-white/10">
@@ -240,7 +240,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                             <button onClick={() => setShowRecordModal(false)} className="text-gray-500 hover:text-gray-700 p-1">✕</button>
                         </div>
                         <div className="overflow-y-auto flex-1">
-                            <div className="overflow-x-auto rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                            <div className="overflow-x-auto overflow-y-auto max-h-[40vh] rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
                                 <table className="w-full text-left">
                                     <thead>
                                         <tr className="bg-white/10">
