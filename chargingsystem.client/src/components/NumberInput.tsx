@@ -16,7 +16,7 @@ export default function NumberInput({
     return (
         <input
             type="number"
-            className={`bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800 ${className}`}
+            className={`bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-800 ${className} modal-input`}
             value={value === defaultValue ? '' : value}
             placeholder={placeholder}
             onBlur={(e) => {

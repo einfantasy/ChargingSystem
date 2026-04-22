@@ -176,3 +176,32 @@ th, td {
     background: rgba(168, 85, 247, 0.6);
 }
 
+.modal-input,
+.modal-input:focus {
+    border-width: 1px !important;
+    border-color: rgba(168, 85, 247, 0.35) !important;
+}
+
+.modal-input:focus {
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12) !important;
+}
+
+.modal-select,
+.modal-select:focus {
+    border-width: 1px !important;
+    border-color: rgba(168, 85, 247, 0.35) !important;
+}
+
+.modal-select:focus {
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12) !important;
+}
+
+.modal-date {
+    border-width: 1px !important;
+    border-color: rgba(168, 85, 247, 0.35) !important;
+}
+
+.modal-date::-webkit-calendar-picker-indicator {
+    filter: invert(0.6) sepia(1) saturate(5) hue-rotate(260deg);
+}
+

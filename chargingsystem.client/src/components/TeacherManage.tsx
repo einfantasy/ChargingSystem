@@ -142,7 +142,7 @@ export default function TeacherManagePage({
                         <label className="block text-sm font-medium text-gray-700 mb-2">教师姓名</label>
                         <input
                             placeholder="请输入姓名"
-                            className="w-full bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-gray-800 placeholder:text-gray-400"
+                            className="w-full bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-800 placeholder:text-gray-400 modal-input"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -151,7 +151,7 @@ export default function TeacherManagePage({
                         <label className="block text-sm font-medium text-gray-700 mb-2">教授学科</label>
                         <input
                             placeholder="请输入学科"
-                            className="w-full bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-gray-800 placeholder:text-gray-400"
+                            className="w-full bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-800 placeholder:text-gray-400 modal-input"
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
                         />

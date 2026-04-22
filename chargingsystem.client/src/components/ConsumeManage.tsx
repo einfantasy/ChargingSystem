@@ -167,7 +167,7 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                 <div className="flex flex-col mb-4">
                     <span className="text-sm text-gray-600 mb-2">请选择老师</span>
                     <select
-                        className="bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800"
+                        className="bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-800 modal-select"
                         value={selectedTeacher}
                         onChange={(e) => setSelectedTeacher(e.target.value)}
                     >
@@ -189,7 +189,7 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                     </label>
                     <input
                         type="date"
-                        className="bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800 cursor-pointer"
+                        className="bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-800 cursor-pointer modal-date"
                         onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
@@ -212,7 +212,7 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                         </label>
                         <input
                             type="month"
-                            className="w-full md:w-64 bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800 cursor-pointer"
+                            className="w-full md:w-64 bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-800 cursor-pointer modal-date"
                             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
                             value={queryDate}
                             onChange={(e) => {
@@ -223,7 +223,7 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
                     </div>
                 </div>
 
-                <div className="overflow-x-auto overflow-y-auto max-h-[40vh] rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                <div className="overflow-x-auto overflow-y-auto max-h-[30vh] rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
                     <table className="w-full text-left">
                         <thead>
                             <tr className="bg-white/10">

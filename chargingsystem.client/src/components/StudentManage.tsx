@@ -154,7 +154,7 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="新增学生">
                 <input
                     placeholder="请输入姓名"
-                    className="w-full bg-white/50 border border-white/20 p-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-gray-800 placeholder:text-gray-400 mb-4"
+                    className="w-full bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-800 placeholder:text-gray-400 mb-4 modal-input"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
