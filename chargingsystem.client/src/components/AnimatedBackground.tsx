@@ -1,13 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-interface Particle {
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
-    radius: number;
-    alpha: number;
+interface Wave {
+    amplitude: number;
+    frequency: number;
     speed: number;
+    color: string;
+    yOffset: number;
 }
 
 export const AnimatedBackground: React.FC = () => {
@@ -21,59 +19,47 @@ export const AnimatedBackground: React.FC = () => {
         if (!ctx) return;
 
         let animationId: number;
-        let particles: Particle[] = [];
+        let time = 0;
+
+        const waves: Wave[] = [
+            { amplitude: 30, frequency: 0.003, speed: 0.008, color: 'rgba(88, 28, 135, 0.15)', yOffset: 0.55 },
+            { amplitude: 25, frequency: 0.004, speed: 0.012, color: 'rgba(88, 28, 135, 0.2)', yOffset: 0.6 },
+            { amplitude: 20, frequency: 0.005, speed: 0.015, color: 'rgba(88, 28, 135, 0.25)', yOffset: 0.65 },
+            { amplitude: 15, frequency: 0.006, speed: 0.018, color: 'rgba(170, 59, 255, 0.15)', yOffset: 0.7 },
+            { amplitude: 35, frequency: 0.002, speed: 0.006, color: 'rgba(170, 59, 255, 0.1)', yOffset: 0.5 },
+        ];
 
         const resize = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            initParticles();
         };
 
-        const initParticles = () => {
-            particles = [];
-            const count = Math.floor((canvas.width * canvas.height) / 15000);
-            for (let i = 0; i < count; i++) {
-                particles.push(createParticle(true));
-            }
-        };
-
-        const createParticle = (randomY = false): Particle => {
-            return {
-                x: Math.random() * canvas.width,
-                y: randomY ? Math.random() * canvas.height : canvas.height + 10,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: -Math.random() * 0.5 - 0.2,
-                radius: Math.random() * 3 + 2,
-                alpha: Math.random() * 0.5 + 0.2,
-                speed: Math.random() * 0.5 + 0.5
-            };
-        };
-
-        const drawParticle = (p: Particle) => {
-            const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 2);
-            gradient.addColorStop(0, `rgba(170, 59, 255, ${p.alpha})`);
-            gradient.addColorStop(1, 'rgba(170, 59, 255, 0)');
+        const drawWave = (wave: Wave, offsetY: number) => {
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius * 2, 0, Math.PI * 2);
-            ctx.fillStyle = gradient;
+            const baseY = canvas.height * wave.yOffset + offsetY;
+
+            ctx.moveTo(0, canvas.height);
+
+            for (let x = 0; x <= canvas.width; x += 2) {
+                const y = baseY + Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude
+                    + Math.sin(x * wave.frequency * 1.5 + time * wave.speed * 0.7) * wave.amplitude * 0.3;
+                ctx.lineTo(x, y);
+            }
+
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.closePath();
+            ctx.fillStyle = wave.color;
             ctx.fill();
-        };
-
-        const updateParticles = () => {
-            particles.forEach((p, i) => {
-                p.x += p.vx * p.speed;
-                p.y += p.vy * p.speed;
-
-                if (p.y < -10 || p.x < -10 || p.x > canvas.width + 10) {
-                    particles[i] = createParticle();
-                }
-            });
         };
 
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updateParticles();
-            particles.forEach(drawParticle);
+            time += 1;
+
+            for (let i = 0; i < waves.length; i++) {
+                drawWave(waves[i], Math.sin(time * 0.003 + i) * 5);
+            }
+
             animationId = requestAnimationFrame(animate);
         };
 
@@ -92,7 +78,7 @@ export const AnimatedBackground: React.FC = () => {
             <div className="animated-gradient" />
             <canvas
                 ref={canvasRef}
-                className="particles-canvas"
+                className="wave-canvas"
             />
             <style>{`
                 .animated-gradient {
@@ -123,9 +109,9 @@ export const AnimatedBackground: React.FC = () => {
                         background-position: 0% 50%;
                     }
                 }
-                .particles-canvas {
+                .wave-canvas {
                     position: fixed;
-                    top: 0;
+                    bottom: 0;
                     left: 0;
                     width: 100%;
                     height: 100%;
