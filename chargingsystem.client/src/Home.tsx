@@ -157,7 +157,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                     </div>
                 </div>
             )}
-            <div className="flex h-screen">
+            <div className="flex h-full">
 
                 {/* 移动端菜单遮罩 */}
                 {isMobileMenuOpen && (
@@ -172,7 +172,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                     fixed lg:relative z-30 lg:z-0
                     transition-all duration-300 ease-in-out 
                     border-r border-white/10 bg-black/20 backdrop-blur-sm
-                    h-full
+                    h-dvh
                     ${isCollapsed ? "w-18" : "w-64"}
                     ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
                 `}>
