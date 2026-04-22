@@ -15,17 +15,11 @@ import {
     School,
     AlertTriangle
 } from 'lucide-react';
+import { isTokenExpired, checkTokenStatus, refreshToken } from './utils/auth';
 
 interface HomeProps {
     user: { username: string };
     onLogout: () => void;
-}
-
-// --- 辅助函数 ---
-function isTokenExpired() {
-    const expiresAt = localStorage.getItem("expiresAt");
-    if (!expiresAt) return true;
-    return new Date(expiresAt).getTime() < Date.now();
 }
 
 export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
@@ -49,9 +43,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     // --- 3. API 请求逻辑 ---
     const fetchDashboard = async () => {
         try {
-            const response = await fetch("/api/util/dashboard", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await fetch("/api/util/dashboard", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
             if (response.ok) {
                 const data = await response.json();
                 setDashboardInfo(data);
@@ -63,9 +55,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
     const fetchStudents = async () => {
         try {
-            const response = await fetch("/api/student/list", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await fetch("/api/student/list", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
             if (response.ok) {
                 const data = await response.json();
                 setStudents(data);
@@ -77,9 +67,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
     const fetchTeachers = async () => {
         try {
-            const response = await fetch("/api/teacher/list", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await fetch("/api/teacher/list", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
             if (response.ok) {
                 const data = await response.json();
                 setTeachers(data);
@@ -90,48 +78,19 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     };
 
     // --- 4. Token 检查逻辑 ---
-    const refreshToken = async () => {
-        try {
-            const response = await fetch("/api/auth/refresh", {
-                method: "POST",
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("expiresAt", data.expiresAt);
-                setShowWarning(false);
-            } else {
-                onLogout();
-            }
-        } catch {
-            onLogout();
-        }
+    const checkTokenStatusLocal = () => {
+        checkTokenStatus(
+            () => onLogout(),
+            (msg) => { setWarningMessage(msg); setShowWarning(true); }
+        );
     };
 
-    const checkTokenStatus = () => {
-        const expiresAt = localStorage.getItem("expiresAt");
-        if (!expiresAt) {
-            onLogout();
-            return;
-        }
-
-        const expiryTime = new Date(expiresAt).getTime();
-        const now = Date.now();
-        const timeLeft = expiryTime - now;
-
-        if (timeLeft <= 0) {
-            onLogout();
-            return;
-        }
-
-        const fiveMinutes = 5 * 60 * 1000;
-        if (timeLeft <= fiveMinutes) {
-            const minsLeft = Math.ceil(timeLeft / 60000);
-            setWarningMessage(`登录将在 ${minsLeft} 分钟后过期，是否继续？`);
-            setShowWarning(true);
-        } else {
+    const handleRefreshToken = async () => {
+        const result = await refreshToken();
+        if (result.success) {
             setShowWarning(false);
+        } else {
+            onLogout();
         }
     };
 
@@ -150,23 +109,14 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
             return;
         }
 
-        checkTokenStatus();
+        checkTokenStatusLocal();
 
         const tokenCheckInterval = setInterval(() => {
-            checkTokenStatus();
+            checkTokenStatusLocal();
         }, 60000);
 
         return () => clearInterval(tokenCheckInterval);
     }, [onLogout]);
-
-    const handleRefreshToken = async () => {
-        await refreshToken();
-        setShowWarning(false);
-    };
-
-    const handleContinue = () => {
-        handleRefreshToken();
-    };
 
     // --- 6. 配置项 ---
     const menuItems = [
@@ -198,7 +148,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                                 退出登录
                             </button>
                             <button
-                                onClick={handleContinue}
+                                onClick={handleRefreshToken}
                                 className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all"
                             >
                                 继续使用
