@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -45,6 +46,41 @@ namespace ChargingSystem.Server.Controllers
             });
         }
 
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.CurrentPassword) || string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                return BadRequest("请输入原密码和新密码");
+            }
+
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            if (string.IsNullOrEmpty(username))
+            {
+                return Unauthorized("无效的用户信息");
+            }
+
+            var user = await _userService.GetUsersByName(username);
+            if (user == null)
+            {
+                return Unauthorized("用户不存在");
+            }
+
+            if (!_passwordService.VerifyPassword(model.CurrentPassword, user.Password))
+            {
+                return BadRequest("原密码错误");
+            }
+
+            var success = await _userService.UpdateUserPasswordAsync(username, model.NewPassword);
+            if (!success)
+            {
+                return BadRequest("密码修改失败");
+            }
+
+            return Ok("密码修改成功");
+        }
+
         [HttpPost("refresh")]
         public IActionResult RefreshToken()
         {
@@ -86,5 +122,11 @@ namespace ChargingSystem.Server.Controllers
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+    }
+
+    public class ChangePasswordModel
+    {
+        public string CurrentPassword { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
     }
 }

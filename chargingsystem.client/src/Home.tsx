@@ -13,7 +13,9 @@ import {
     ChevronRight,
     LogOut,
     School,
-    AlertTriangle
+    AlertTriangle,
+    Key,
+    X
 } from 'lucide-react';
 import { isTokenExpired, checkTokenStatus, refreshToken } from './utils/auth';
 
@@ -29,6 +31,13 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [warningMessage, setWarningMessage] = useState("");
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [passwordSuccess, setPasswordSuccess] = useState("");
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
 
     // --- 2. 业务数据状态 ---
     const [students, setStudents] = useState<Student[]>([]);
@@ -94,6 +103,64 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         }
     };
 
+    const handleResetPasswordModal = () => {
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setPasswordError("");
+        setPasswordSuccess("");
+        setShowPasswordModal(true);
+    };
+
+    const handleChangePassword = async () => {
+        setPasswordError("");
+        setPasswordSuccess("");
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            setPasswordError("请填写所有字段");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setPasswordError("两次输入的新密码不一致");
+            return;
+        }
+
+        setIsChangingPassword(true);
+
+        try {
+            const response = await fetch("/api/auth/change-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify({
+                    currentPassword,
+                    newPassword
+                })
+            });
+
+            if (response.ok) {
+                setPasswordSuccess("密码修改成功");
+                setCurrentPassword("");
+                setNewPassword("");
+                setConfirmPassword("");
+                setTimeout(() => {
+                    setShowPasswordModal(false);
+                    setPasswordSuccess("");
+                }, 1500);
+            } else {
+                const msg = await response.text();
+                setPasswordError(msg || "密码修改失败");
+            }
+        } catch {
+            setPasswordError("无法连接到服务器");
+        } finally {
+            setIsChangingPassword(false);
+        }
+    };
+
     // --- 5. 副作用 ---
     useEffect(() => {
         const load = async () => {
@@ -128,6 +195,71 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
     return (
         <div className="text-white">
+            {/* 修改密码弹窗 */}
+            {showPasswordModal && (
+                <div className="modal-overlay">
+                    <div className="bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-2xl w-[90%] sm:w-[420px] border border-white/20 relative">
+                        <button
+                            onClick={() => setShowPasswordModal(false)}
+                            className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-200 transition-colors"
+                        >
+                            <X size={20} className="text-gray-500" />
+                        </button>
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 text-left">修改密码</h3>
+
+                        {passwordError && (
+                            <p className="text-red-500 text-sm mb-4">{passwordError}</p>
+                        )}
+                        {passwordSuccess && (
+                            <p className="text-green-500 text-sm mb-4">{passwordSuccess}</p>
+                        )}
+
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">原密码</label>
+                            <input
+                                type="password"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                className="w-full bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-400 modal-input"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">新密码</label>
+                            <input
+                                type="password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className="w-full bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-400 modal-input"
+                            />
+                        </div>
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">确认新密码</label>
+                            <input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="w-full bg-white/50 border border-solid p-3 rounded-lg outline-none text-gray-400 modal-input"
+                            />
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                            <button
+                                onClick={() => setShowPasswordModal(false)}
+                                className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                            >
+                                取消
+                            </button>
+                            <button
+                                onClick={handleChangePassword}
+                                disabled={isChangingPassword}
+                                className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+                            >
+                                {isChangingPassword ? "修改中..." : "确认修改"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {/* Token 过期警告弹窗 */}
             {showWarning && (
                 <div className="modal-overlay">
@@ -232,19 +364,34 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                             </button>
                             <h2 className="text-lg lg:text-xl">你好, {user?.username || "未知用户"}</h2>
                         </div>
-                        <button
-                            onClick={onLogout}
-                            className="
-                                flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg 
-                                bg-red-500/80 text-white text-sm font-medium
-                                transition-all duration-300 ease-out
-                                hover:bg-red-600 hover:scale-105 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]
-                                active:scale-95 group
-                            "
-                        >
-                            <LogOut size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
-                            <span className="hidden sm:inline">退出登录</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={handleResetPasswordModal}
+                                className="
+                                    flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg 
+                                    bg-amber-500/80 text-white text-sm font-medium
+                                    transition-all duration-300 ease-out
+                                    hover:bg-amber-600 hover:scale-105 hover:shadow-[0_0_15px_rgba(245,158,11,0.4)]
+                                    active:scale-95 group
+                                "
+                            >
+                                <Key size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
+                                <span className="hidden sm:inline">修改密码</span>
+                            </button>
+                            <button
+                                onClick={onLogout}
+                                className="
+                                    flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg 
+                                    bg-red-500/80 text-white text-sm font-medium
+                                    transition-all duration-300 ease-out
+                                    hover:bg-red-600 hover:scale-105 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]
+                                    active:scale-95 group
+                                "
+                            >
+                                <LogOut size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
+                                <span className="hidden sm:inline">退出登录</span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* 路由视图 */}

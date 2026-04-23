@@ -168,9 +168,9 @@ export default function StudentManagePage({ students, fetchStudents }: { student
             <Modal isOpen={showRechargeModal} onClose={() => setShowRechargeModal(false)} title={`充值 - ${currentStudent?.name}`}>
                 <div className="flex flex-col gap-4">
                     {[
-                        { label: "充值课时", val: hour, setVal: setHour, tip: "请输入购买的课时数" },
-                        { label: "课时单价", val: price, setVal: setPrice, tip: "请输入课时单价" },
-                        { label: "成本价", val: cost, setVal: setCost, tip: "请输入成本价" }
+                        { label: "充值课时", val: hour, setVal: setHour },
+                        { label: "课时单价", val: price, setVal: setPrice },
+                        { label: "成本价", val: cost, setVal: setCost }
                     ].map((field, idx) => (
                         <div key={idx} className="flex flex-col">
                             <span className="text-sm font-medium text-gray-700 mb-2">{field.label}</span>

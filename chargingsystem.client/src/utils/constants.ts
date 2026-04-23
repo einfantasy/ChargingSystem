@@ -2,6 +2,7 @@ export const API = {
     AUTH: {
         LOGIN: "/api/auth/login",
         REFRESH: "/api/auth/refresh",
+        CHANGE_PASSWORD: "/api/auth/change-password",
     },
     STUDENT: {
         LIST: "/api/student/list",

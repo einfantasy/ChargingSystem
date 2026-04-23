@@ -39,6 +39,20 @@ namespace ChargingSystem.Server
             return user;
         }
 
+        public async Task<bool> UpdateUserPasswordAsync(string name, string newPassword)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Name == name);
+
+            if (user == null)
+                return false;
+
+            user.Password = _passwordService.HashPassword(newPassword);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task SeedDefaultAdminAsync()
         {
             if (await _context.Users.AnyAsync())
