@@ -174,7 +174,6 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                     ].map((field, idx) => (
                         <div key={idx} className="flex flex-col">
                             <span className="text-sm font-medium text-gray-700 mb-2">{field.label}</span>
-                            <span className="text-xs text-gray-500 mb-1">{field.tip}</span>
                             <NumberInput value={field.val} onChange={field.setVal} />
                         </div>
                     ))}
