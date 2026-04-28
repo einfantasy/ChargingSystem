@@ -61,7 +61,8 @@ Write-Host "  Remote directory cleaned." -ForegroundColor Green
 # Step 4: Upload files
 Write-Host "`n[4/6] Uploading files..." -ForegroundColor Yellow
 Push-Location $publishDir
-pscp -pw $sshPassword -batch -r * ${remoteUser}@${remoteIP}:${remotePath}
+# 添加 -x *.pdb 参数来排除 .pdb 文件
+pscp -pw $sshPassword -batch -r -x *.pdb * ${remoteUser}@${remoteIP}:${remotePath}
 if ($LASTEXITCODE -ne 0) {
     Write-Host "  ERROR: File upload failed." -ForegroundColor Red
     Pop-Location

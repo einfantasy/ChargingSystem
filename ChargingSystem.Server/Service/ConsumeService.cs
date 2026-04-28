@@ -40,8 +40,8 @@ namespace ChargingSystem.Server
                     s.StudentId as StudentId,
                     s.Name AS StudentName,
                     r.RechargeId AS RechargeId, 
-                    (COALESCE(r.TotalRecharge, 0) - COALESCE(c.TotalConsume, 0)) AS RemainingHours,
-                    COALESCE(r.TotalCost, 0) AS Cost
+                    ROUND((COALESCE(r.TotalRecharge, 0) - COALESCE(c.TotalConsume, 0)), 2) AS RemainingHours,
+                    ROUND(COALESCE(r.TotalCost, 0), 2) AS Cost
                 FROM Students s
                 -- 关联充值汇总
                 LEFT JOIN (
@@ -62,7 +62,7 @@ namespace ChargingSystem.Server
                 ) c ON r.RechargeId = c.RechargeId
                 -- 关键修改：过滤掉没有充值记录的行
                 WHERE r.RechargeId IS NOT NULL
-                ORDER BY RemainingHours DESC";
+                ORDER BY RemainingHours DESC;";
 
             // 2. 执行查询
             var results = await _context.Database

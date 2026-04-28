@@ -40,10 +40,13 @@ def main():
             continue
 
         recharge_hour = row[2] if row[2] else 0
+        gift_hour = row[3] if row[3] else 0
+        from decimal import Decimal
+        recharge_hour = str(Decimal(recharge_hour) + Decimal(gift_hour))
         recharge_price = row[9] if row[9] else 0
         cost = row[10] if row[10] else 0
 
-        rec_id = str(uuid.uuid4())
+        rec_id = str(uuid.uuid4()).upper()
         cur.execute(
             "INSERT INTO Recharges (Id, StudentId, RechargePrice, RechargeHour, Date, Cost) VALUES (?, ?, ?, ?, ?, ?)",
             (rec_id, student_id, recharge_price, recharge_hour, "2026-01-01 00:00:00", cost),

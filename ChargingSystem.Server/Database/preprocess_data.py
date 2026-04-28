@@ -66,22 +66,23 @@ def merge_row_below(ws, coordinate):
         return
 
     # 获取第一行的值 (合并单元格只有左上角有值)
-    first_row_value = ws.cell(row=1, column=min_col).value
+    first_row_value = str(ws.cell(row=1, column=min_col).value or "")[:2]
 
-    # 3. 确定第二行的目标范围
-    # 目标单元格是第二行的起始位置 (例如 L2)
-    target_cell_row2 = ws.cell(row=2, column=min_col)
-    
-    # 复制值
-    target_cell_row2.value = first_row_value
+    print(f"正在处理: {first_row_value}")
+    for i in range(min_col, max_col + 1):
+        # 3. 确定第二行的目标范围
+        # 目标单元格是第二行的起始位置 (例如 L2)
+        target_cell_row2 = ws.cell(row=2, column=i)
+        # 复制值
+        target_cell_row2.value = first_row_value
     
     # 4. 执行第二行的合并
     # 如果范围只有一列，不需要合并；如果是多列，则合并
-    if min_col < max_col:
-        safe_merge_cells(ws, 2, min_col, 2, max_col)
-        print(f"已合并 {get_column_letter(min_col)}2:{get_column_letter(max_col)}2 并复制值")
-    else:
-        print(f"原单元格未跨列，仅复制值到 {get_column_letter(min_col)}2")
+    #if min_col < max_col:
+    #    safe_merge_cells(ws, 2, min_col, 2, max_col)
+    #    print(f"已合并 {get_column_letter(min_col)}2:{get_column_letter(max_col)}2 并复制值")
+    #else:
+    #    print(f"原单元格未跨列，仅复制值到 {get_column_letter(min_col)}2")
 
 def excel_serial_to_ym(serial_number):
     """
@@ -135,8 +136,6 @@ def main():
     
     # 【新增】记录初始的最大列数，作为进度条的总长度
     initial_max_column = ws.max_column
-    # 【新增】初始化 tqdm 进度条，desc为描述信息，total为总进度数
-    #pbar = tqdm(total=initial_max_column - START_COL + 1, desc="处理列进度")
 
     cols_to_delete = []
     # 注意：由于循环中会动态删除列，ws.max_column 会实时变化
@@ -144,7 +143,6 @@ def main():
         cell_val = ws.cell(row=1, column=col).value
         if cell_val is None:
             col += 1
-            #pbar.update(1) # 【新增】更新进度条
             continue
 
         cell_str = str(cell_val).strip()
@@ -218,7 +216,7 @@ def main():
             col += 1
 
     if cols_to_delete:
-        print("\n开始统一执行列删除操作...")
+        print("开始统一执行列删除操作...")
 
         # 1. 记录所有现有的合并单元格信息（使用 deepcopy 防止后续操作影响原始数据）
         # 注意：需要确保文件开头导入了 from copy import deepcopy
@@ -268,6 +266,30 @@ def main():
                 if new_min_col > 0 and new_max_col > 0:
                     ws.merge_cells(start_row=min_r, start_column=new_min_col, end_row=max_r, end_column=new_max_col)
         print("列删除操作全部完成。")
+
+    # 更新日期
+    # 【新增】初始化 tqdm 进度条，desc为描述信息，total为总进度数
+    print("开始处理日期...")
+    pbar = tqdm(total=initial_max_column - START_COL + 1, desc="处理列进度")
+    col = START_COL
+    while col <= ws.max_column:
+        cell_val = ws.cell(row=3, column=col).value
+        cell_str = str(cell_val).strip() if cell_val is not None else ""
+
+        target_range = None
+        for merged_range in ws.merged_cells.ranges:
+            if merged_range.min_row <= 1 <= merged_range.max_row and merged_range.min_col <= col <= merged_range.max_col:
+                target_range = merged_range
+                break
+        
+        if target_range:
+            first_row_value = ws.cell(row=target_range.min_row, column=target_range.min_col).value
+            safe_first_value = str(first_row_value) if first_row_value is not None else ""
+            target_cell = ws.cell(row=3, column=col)
+            target_cell.value = safe_first_value + cell_str + "日"
+
+        pbar.update(1)
+        col += 1
 
     print(f"处理完成，保存至: {OUTPUT_PATH}")
     save(wb, OUTPUT_PATH)
