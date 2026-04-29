@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import type { Student, Teacher, DashboardInfo } from './types';
+import type { Student, Teacher } from './types';
 import StudentManagePage from "./components/StudentManage";
 import TeacherManagePage from "./components/TeacherManage";
 import ConsumeManagePage from "./components/ConsumeManage";
+import DashboardManage from "./components/DashboardManage";
 import {
     LayoutDashboard,
     Users,
@@ -42,26 +43,8 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     // --- 2. 业务数据状态 ---
     const [students, setStudents] = useState<Student[]>([]);
     const [teachers, setTeachers] = useState<Teacher[]>([]);
-    const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo>({
-        totalMoney: "0",
-        totalHours: "0",
-        teacherCount: "0",
-        studentCount: "0"
-    });
 
     // --- 3. API 请求逻辑 ---
-    const fetchDashboard = async () => {
-        try {
-            const response = await fetch("/api/util/dashboard", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-            if (response.ok) {
-                const data = await response.json();
-                setDashboardInfo(data);
-            }
-        } catch (error) {
-            console.error("看板数据获取失败:", error);
-        }
-    };
-
     const fetchStudents = async () => {
         try {
             const response = await fetch("/api/student/list", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -166,7 +149,6 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         const load = async () => {
             await fetchStudents();
             await fetchTeachers();
-            await fetchDashboard();
         };
 
         load();
@@ -397,7 +379,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                     {/* 路由视图 */}
                     <div className="flex-1 overflow-auto p-4 lg:p-6 pt-0">
                         <div className="text-slate-900">
-                            {activeMenu === "dashboard" && <Dashboard dashboardInfo={dashboardInfo} />}
+                            {activeMenu === "dashboard" && <DashboardManage />}
                             {activeMenu === "teachers" && <TeacherManagePage teachers={teachers} fetchTeachers={fetchTeachers} />}
                             {activeMenu === "students" && <StudentManagePage students={students} fetchStudents={fetchStudents} />}
                             {activeMenu === "consume" && <ConsumeManagePage teachers={teachers} />}
@@ -408,28 +390,3 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         </div>
     );
 };
-
-// --- 子组件：看板 ---
-function Dashboard({ dashboardInfo }: { dashboardInfo: DashboardInfo; }) {
-    return (
-        <div>
-            <h2 className="text-xl lg:text-2xl font-bold mb-4 text-white">数据总览</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-                <Card title="总课时" value={dashboardInfo.totalHours} />
-                <Card title="总收入" value={`¥${dashboardInfo.totalMoney}`} />
-                <Card title="教师人数" value={dashboardInfo.teacherCount} />
-                <Card title="活跃学生" value={dashboardInfo.studentCount} />
-            </div>
-        </div>
-    );
-}
-
-// --- 子组件：卡片 ---
-function Card({ title, value }: { title: string; value: string }) {
-    return (
-        <div className="bg-white/10 backdrop-blur-md border border-white/10 p-4 lg:p-5 rounded-xl shadow-lg transition-all duration-300 hover:bg-white/20 hover:shadow-xl hover:scale-[1.02]">
-            <div className="text-purple-300 text-xs lg:text-sm font-medium mb-1">{title}</div>
-            <div className="text-xl lg:text-2xl font-bold text-white">{value}</div>
-        </div>
-    );
-}
