@@ -76,7 +76,7 @@ namespace ChargingSystem.Server
         {
             DateTime dt = DateTime.ParseExact(queryDate, "yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
 
-            var result = _context.Consumes
+            var result = await _context.Consumes
                 .Where(c => c.RechargeId == Guid.Parse(rechargeId) && c.Date.Year == dt.Year && c.Date.Month == dt.Month)
                 .Join(_context.Teachers,
                     c => c.TeacherId,
@@ -91,7 +91,23 @@ namespace ChargingSystem.Server
                         Hour = c.Hour
                     })
                 .OrderBy(re => re.Date)
-                .ToList();
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<List<ContributiontDto>> GetContribution(string queryYear)
+        {
+            var result = await _context.Consumes
+                .Where(c => c.Date.Year == int.Parse(queryYear))          // 筛选指定年份
+                .GroupBy(c => c.Date)                      // 按日期分组
+                .Select(g => new ContributiontDto          // 投影到 DTO 类
+                {
+                    Date = g.Key,
+                    Hour = g.Sum(c => c.Hour)              // 计算当天总课时
+                })
+                .OrderBy(x => x.Date)                      // 按日期升序排列
+                .ToListAsync();                            // 异步执行并返回 List
 
             return result;
         }

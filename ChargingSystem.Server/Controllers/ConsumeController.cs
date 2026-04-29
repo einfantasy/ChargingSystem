@@ -40,6 +40,14 @@ namespace ChargingSystem.Server
             var data = await _service.GetConsumeList(rechargeId, queryDate);
             return Ok(data);
         }
+
+        [Authorize]
+        [HttpGet("query_contribution")]
+        public async Task<IActionResult> GetContribution([FromQuery] string queryYear)
+        {
+            var data = await _service.GetContribution(queryYear);
+            return Ok(data);
+        }
     }
 
     public class StudentBalanceDto
@@ -66,6 +74,12 @@ namespace ChargingSystem.Server
         public Guid RechargeId { get; set; }
         public string TeacherName { get; set; }
         public string Subject { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Hour { get; set; }
+    }
+
+    public class ContributiontDto
+    {
         public DateTime Date { get; set; }
         public decimal Hour { get; set; }
     }

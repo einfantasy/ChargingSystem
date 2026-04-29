@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { DashboardInfo } from '../types';
+import Contribution from './Contribution';
 
 const DashboardManage: React.FC = () => {
     const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo>({
@@ -31,11 +32,14 @@ const DashboardManage: React.FC = () => {
         <div>
             <h2 className="text-xl lg:text-2xl font-bold mb-4 text-white">数据总览</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-                <Card title="总课时" value={dashboardInfo.totalHours} />
-                <Card title="总收入" value={`¥${dashboardInfo.totalMoney}`} />
+                <Card title="当月课时" value={dashboardInfo.totalHours} />
+                <Card title="当月收入" value={`¥${dashboardInfo.totalMoney}`} />
                 <Card title="教师人数" value={dashboardInfo.teacherCount} />
-                <Card title="活跃学生" value={dashboardInfo.studentCount} />
+               <Card title="活跃学生" value={dashboardInfo.studentCount} />
             </div>
+            <div className="mt-4">
+                <Contribution />
+           </div>
         </div>
     );
 };
