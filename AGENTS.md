@@ -47,7 +47,7 @@ dotnet run --project ChargingSystem.Server
 - **Services** live in `ChargingSystem.Server/Service/` — registered as `Scoped` in `Program.cs`
 - **Controllers** live in `ChargingSystem.Server/Controllers/` — DTOs defined inline in controller files
 - **No migrations** — the `app.db` file is checked in and copied to output via `<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>`
-- **Seeding**: Default admin user (`admin` / `admin123`) is seeded on startup in `Program.cs` lines 47-50 if `Users` table is empty
+- **Seeding**: Default admin user (`admin` / `admin123`) is seeded on startup in `Program.cs:49` if `Users` table is empty
 - **Password hashing**: `PasswordService` handles hashing/verification
 
 ## API Structure
@@ -80,3 +80,6 @@ All endpoints prefixed `/api/[controller]`. Most require `[Authorize]` (JWT Bear
 - SPA Proxy is enabled via `ASPNETCORE_HOSTINGSTARTUPASSEMBLIES` env var in `launchSettings.json`
 - The Vite dev server proxies `/api` and `/weatherforecast` to `http://localhost:5126` when run standalone
 - `WeatherForecastController.cs` appears to be a leftover template file — safe to ignore or remove
+- **No test framework** configured — don't look for tests or try to run them
+- Frontend uses `@` import alias pointing to `./src` (configured in `vite.config.ts`)
+- `NPOI` package is used for Excel import/export operations (see `RechargeController` for usage)
