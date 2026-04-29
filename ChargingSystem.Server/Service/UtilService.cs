@@ -13,10 +13,10 @@ namespace ChargingSystem.Server
             _context = context;
         }
 
-        public async Task<DashboardInfo> GetDashboardInfo()
+        public async Task<DashboardInfo> GetDashboardInfo(int queryYear, int queryMonth)
         {
-            int year = DateTime.Now.Year;
-            int month = DateTime.Now.Month;
+            int year = queryYear;
+            int month = queryMonth;
             DashboardInfo info = new DashboardInfo() { TotalHours = "0", TotalMoney = "0" };
             var consumes = await _context.Consumes
                 .Where(c => c.Date.Year == year && c.Date.Month == month)
@@ -41,7 +41,7 @@ namespace ChargingSystem.Server
             }
 
             info.TotalHours = totalHours.ToString();
-            info.TotalMoney = totalMoney.ToString();
+            info.TotalMoney = totalMoney.ToString("F2");
             info.TeacherCount = (await _context.Teachers.CountAsync()).ToString();
             info.StudentCount = (await _context.Recharges
                 .Where(r => rechargeIds.Contains(r.Id))

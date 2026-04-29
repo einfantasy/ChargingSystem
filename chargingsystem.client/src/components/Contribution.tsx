@@ -125,7 +125,7 @@ interface WeekDay {
     day: number | null;
 }
 
-export default function Contribution() {
+export default function Contribution({ onMonthSelect }: { onMonthSelect?: (year: number, month: number) => void }) {
     const currentYear = new Date().getFullYear();
     const [year, setYear] = useState(currentYear);
     const [contributionHours, setContributionHours] = useState<Map<string, number>>(new Map());
@@ -276,9 +276,13 @@ export default function Contribution() {
                                 if (monthFirstDayCol[month] !== col) return <div key={col} className="w-3" />;
 
                                 return (
-                                    <div key={col} className={MONTH_LABEL_CLASS}>
+                                    <button
+                                        key={col}
+                                        className={`${MONTH_LABEL_CLASS} cursor-pointer hover:text-white transition-colors`}
+                                        onClick={() => onMonthSelect?.(year, month + 1)}
+                                    >
                                         {MONTH_NAMES[month]}
-                                    </div>
+                                    </button>
                                 );
                             })}
                         </div>
@@ -312,9 +316,12 @@ export default function Contribution() {
 
                             return (
                                 <div key={row} className={`flex items-center ${MOBILE_GAP}`}>
-                                    <div className={MOBILE_MONTH_LABEL_CLASS}>
+                                    <button
+                                        className={`${MOBILE_MONTH_LABEL_CLASS} ${showMonth ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
+                                        onClick={() => showMonth && day1Entry && onMonthSelect?.(year, day1Entry.month! + 1)}
+                                    >
                                         {showMonth ? MONTH_NAMES[day1Entry.month!] : ''}
-                                    </div>
+                                    </button>
                                     {week.map((wd, col) => renderCell(wd, col, MOBILE_CELL_SIZE))}
                                 </div>
                             );

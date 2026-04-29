@@ -16,9 +16,9 @@ namespace ChargingSystem.Server
 
         [Authorize]
         [HttpGet("dashboard")]
-        public async Task<IActionResult> AddStudent()
+        public async Task<IActionResult> GetDashboardInfo([FromQuery] string queryYear, [FromQuery] string queryMonth)
         {
-            var data = await _service.GetDashboardInfo();
+            var data = await _service.GetDashboardInfo(int.Parse(queryYear), int.Parse(queryMonth));
             return Ok(data);
         }
     }

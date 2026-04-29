@@ -10,23 +10,34 @@ const DashboardManage: React.FC = () => {
         studentCount: "0"
     });
 
-    useEffect(() => {
-        const fetchDashboard = async () => {
-            try {
-                const response = await fetch("/api/util/dashboard", {
-                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setDashboardInfo(data);
-                }
-            } catch (error) {
-                console.error("看板数据获取失败:", error);
-            }
-        };
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-indexed, so we add 1
+    const [year, setYear] = useState(currentYear);
+    const [month, setMonth] = useState(currentMonth);
 
-        fetchDashboard();
-    }, []);
+    const fetchDashboard = async (qYear: number, qMonth: number) => {
+        try {
+            const response = await fetch(`/api/util/dashboard?queryYear=${qYear}&queryMonth=${qMonth}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setDashboardInfo(data);
+            }
+        } catch (error) {
+            console.error("看板数据获取失败:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDashboard(year, month);
+    }, [year, month]);
+
+    const handleMonthSelect = (selectedYear: number, selectedMonth: number) => {
+        setYear(selectedYear);
+        setMonth(selectedMonth);
+        fetchDashboard(selectedYear, selectedMonth);
+    };
 
     return (
         <div>
@@ -37,9 +48,9 @@ const DashboardManage: React.FC = () => {
                 <Card title="教师人数" value={dashboardInfo.teacherCount} />
                <Card title="活跃学生" value={dashboardInfo.studentCount} />
             </div>
-            <div className="mt-4">
-                <Contribution />
-           </div>
+           <div className="mt-4">
+                <Contribution onMonthSelect={handleMonthSelect} />
+            </div>
         </div>
     );
 };

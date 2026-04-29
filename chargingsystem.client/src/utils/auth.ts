@@ -12,7 +12,12 @@ export function getTimeRemaining(): number {
     return expiryTime - now;
 }
 
-export async function refreshToken(): Promise<{ success: boolean; data?: any }> {
+export interface RefreshResponse {
+    token: string;
+    expiresAt: string;
+}
+
+export async function refreshToken(): Promise<{ success: boolean; data?: RefreshResponse }> {
     try {
         const response = await fetch("/api/auth/refresh", {
             method: "POST",
