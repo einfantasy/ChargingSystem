@@ -52,8 +52,10 @@ using (var scope = app.Services.CreateScope())
 // 全局异常处理
 app.UseExceptionHandler("/error");
 
+app.UsePathBase("/");
 app.UseDefaultFiles();
-app.MapStaticAssets();
+app.UseStaticFiles();
+//app.MapStaticAssets();
 
 if (app.Environment.IsDevelopment())
 {
