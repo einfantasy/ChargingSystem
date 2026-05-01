@@ -49,38 +49,4 @@ namespace ChargingSystem.Server
             return Ok(data);
         }
     }
-
-    public class StudentBalanceDto
-    {
-        public Guid StudentId { get; set; }
-        public string StudentName { get; set; }
-        public Guid RechargeId { get; set; }
-        public decimal RemainingHours { get; set; }
-        public decimal Cost { get; set; }
-    }
-
-    public class ConsumeDto
-    {
-        public Guid RechargeId { get; set; }
-        public Guid TeacherId { get; set; }
-        public decimal Hour { get; set; }
-        public DateTime Date { get; set; }
-        public decimal Cost { get; set; }
-    }
-
-    public class ConsumeListDto
-    {
-        public Guid Id { get; set; }
-        public Guid RechargeId { get; set; }
-        public string TeacherName { get; set; }
-        public string Subject { get; set; }
-        public DateTime Date { get; set; }
-        public decimal Hour { get; set; }
-    }
-
-    public class ContributiontDto
-    {
-        public DateTime Date { get; set; }
-        public decimal Hour { get; set; }
-    }
 }

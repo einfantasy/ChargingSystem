@@ -26,21 +26,8 @@ namespace ChargingSystem.Server
         [HttpGet("query")]
         public async Task<IActionResult> GetRechargeList([FromQuery] string studentId)
         {
-            var data = await _service.GetRechargeList(studentId);
+           var data = await _service.GetRechargeList(studentId);
             return Ok(data);
         }
-    }
-
-    public class RechargeDto
-    {
-        public string StudentId { get; set; }
-
-        public decimal RechargePrice { get; set; }
-
-        public decimal RechargeHour { get; set; }
-
-        public string Date { get; set; }
-
-        public decimal Cost { get; set; }
     }
 }
