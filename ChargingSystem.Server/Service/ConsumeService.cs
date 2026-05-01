@@ -62,7 +62,7 @@ namespace ChargingSystem.Server
                 ) c ON r.RechargeId = c.RechargeId
                 -- 关键修改：过滤掉没有充值记录的行
                 WHERE r.RechargeId IS NOT NULL
-                ORDER BY RemainingHours DESC;";
+                ORDER BY RemainingHours DESC, StudentName;";
 
             // 2. 执行查询
             var results = await _context.Database
