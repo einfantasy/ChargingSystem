@@ -97,6 +97,33 @@ export default function StudentManagePage({ students, fetchStudents }: { student
         }
     };
 
+    const downloadHistory = async (studentId: string) => {
+        try {
+            const res = await fetch(`/api/student/history?studentId=${encodeURIComponent(studentId)}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            if (!res.ok) {
+                alert("下载失败");
+                return;
+            }
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `student_history_${studentId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error(err);
+            alert("下载失败");
+        }
+    };
+
     const filteredStudents = students.filter(s =>
         s.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -138,6 +165,8 @@ export default function StudentManagePage({ students, fetchStudents }: { student
                                                 }}>充值</button>
                                             <button className="bg-blue-500/80 hover:bg-blue-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
                                                 onClick={() => openRecordModal(s)}>记录</button>
+                                            <button className="bg-purple-500/80 hover:bg-purple-600 text-white px-3 py-1.5 rounded text-sm transition-colors"
+                                                onClick={() => downloadHistory(s.studentId)}>下载记录</button>
                                         </div>
                                     </td>
                                 </tr>
