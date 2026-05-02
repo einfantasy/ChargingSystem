@@ -47,9 +47,9 @@ const DashboardManage: React.FC = () => {
     };
 
     return (
-        <div>
-            <h2 className="text-xl lg:text-2xl font-bold mb-4 text-white">数据总览</h2>
-            <div className={`grid grid-cols-2 gap-3 lg:gap-4 ${authLevel === 0 ? 'lg:grid-cols-5' : 'lg:grid-cols-2'}`}>
+        <div className="flex flex-col min-h-0">
+            <h2 className="text-xl lg:text-2xl font-bold mb-4 text-white shrink-0">数据总览</h2>
+            <div className={`grid grid-cols-1 gap-3 lg:gap-4 ${authLevel === 0 ? 'lg:grid-cols-5' : 'lg:grid-cols-2'}`}>
                 <div className={`grid grid-cols-2 gap-3 lg:gap-4 ${authLevel === 0 ? 'lg:col-span-3' : 'lg:col-span-2'}`}>
                     <Card title="当月课时" value={dashboardInfo.totalHours} />
                     <Card title="当月收入" value={`¥${dashboardInfo.totalMoney}`} />
@@ -62,7 +62,7 @@ const DashboardManage: React.FC = () => {
                     </div>
                 )}
             </div>
-            <div className="mt-4">
+            <div className="mt-4 ">
                 <Contribution onMonthSelect={handleMonthSelect} />
             </div>
         </div>
