@@ -18,7 +18,7 @@ import {
     Key,
     X
 } from 'lucide-react';
-import { isTokenExpired, checkTokenStatus, refreshToken, getAuthLevel } from './utils/auth';
+import { checkTokenStatus, refreshToken, getAuthLevel } from './utils/auth';
 
 interface HomeProps {
     user: { username: string; authLevel?: number };
@@ -146,19 +146,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     };
 
     // --- 5. 副作用 ---
-    useEffect(() => {
-        const load = async () => {
-            await fetchStudents();
-            await fetchTeachers();
-        };
-
-        load();
-
-        if (isTokenExpired()) {
-            onLogout();
-            return;
-        }
-
+useEffect(() => {
         checkTokenStatusLocal();
 
         const tokenCheckInterval = setInterval(() => {
@@ -166,7 +154,8 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         }, 60000);
 
         return () => clearInterval(tokenCheckInterval);
-    }, [onLogout]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // --- 6. 配置项 ---
     const menuItems = authLevel === 0

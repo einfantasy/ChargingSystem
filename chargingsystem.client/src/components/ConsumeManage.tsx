@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { StudentBalanceDto, Teacher, ConsumeRecord } from '../types';
 import { CalendarDays } from "lucide-react";
 import Modal from './Modal';
@@ -62,15 +62,17 @@ export default function ConsumeManagePage({ teachers }: { teachers: Teacher[] })
         }
     };
 
+    const initialized = useRef(false);
     useEffect(() => {
         const load = async () => {
             await fetchBalance();
-            if (teachers.length > 0) {
+            if (teachers.length > 0 && !initialized.current) {
+                initialized.current = true;
                 setSelectedTeacher(teachers[0].teacherId);
             }
         };
         load();
-    }, []);
+    }, [teachers]);
 
     const handleConfirm = async () => {
         setLoading(true);
