@@ -36,7 +36,7 @@ namespace ChargingSystem.Server
                 if (rechargesDict.TryGetValue(c.RechargeId, out var r))
                 {
                     // 公式: (RechargePrice - CostAtTime) * Hour
-                    totalMoney += (r.RechargePrice - c.CostAtTime) * c.Hour;
+                    totalMoney += r.RechargePrice * c.Hour;
                 }
             }
 

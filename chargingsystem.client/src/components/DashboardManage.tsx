@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import type { DashboardInfo } from '../types';
+import { getAuthLevel } from '../utils/auth';
 import Contribution from './Contribution';
+import SalaryPie from './SalaryPie';
 
 const DashboardManage: React.FC = () => {
+    const [authLevel] = useState<number>(getAuthLevel());
     const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo>({
         totalMoney: "0",
         totalHours: "0",
@@ -40,18 +43,26 @@ const DashboardManage: React.FC = () => {
         setYear(selectedYear);
         setMonth(selectedMonth);
         fetchDashboard(selectedYear, selectedMonth);
+        window.dispatchEvent(new CustomEvent('salaryMonthSelect', { detail: { year: selectedYear, month: selectedMonth } }));
     };
 
     return (
         <div>
             <h2 className="text-xl lg:text-2xl font-bold mb-4 text-white">数据总览</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-                <Card title="当月课时" value={dashboardInfo.totalHours} />
-                <Card title="当月收入" value={`¥${dashboardInfo.totalMoney}`} />
-                <Card title="教师人数" value={dashboardInfo.teacherCount} />
-               <Card title="活跃学生" value={dashboardInfo.studentCount} />
+            <div className={`grid grid-cols-2 gap-3 lg:gap-4 ${authLevel === 0 ? 'lg:grid-cols-5' : 'lg:grid-cols-2'}`}>
+                <div className={`grid grid-cols-2 gap-3 lg:gap-4 ${authLevel === 0 ? 'lg:col-span-3' : 'lg:col-span-2'}`}>
+                    <Card title="当月课时" value={dashboardInfo.totalHours} />
+                    <Card title="当月收入" value={`¥${dashboardInfo.totalMoney}`} />
+                    <Card title="教师人数" value={dashboardInfo.teacherCount} />
+                    <Card title="活跃学生" value={dashboardInfo.studentCount} />
+                </div>
+                {authLevel === 0 && (
+                    <div className="lg:col-span-2">
+                        <SalaryPie />
+                    </div>
+                )}
             </div>
-           <div className="mt-4">
+            <div className="mt-4">
                 <Contribution onMonthSelect={handleMonthSelect} />
             </div>
         </div>

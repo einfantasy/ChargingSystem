@@ -127,5 +127,60 @@ namespace ChargingSystem.Server
 
             return result;
         }
+
+        public async Task<List<SalaryDto>> GetSalary(string queryYear, string queryMonth)
+        {
+            DateTime dt = DateTime.ParseExact($"{queryYear}-{queryMonth}", "yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
+            Guid specialTeacherId = Guid.Parse("7DCCBBB6-8B4A-420C-B1BE-500ED93F1697");
+
+            var consumes = await _context.Consumes
+                .Where(c => c.Date.Year == dt.Year && c.Date.Month == dt.Month && c.TeacherId != specialTeacherId)
+                .Include(c => c.Recharge)
+                .ToListAsync();
+
+            var grouped = consumes
+                .GroupBy(c => c.TeacherId)
+                .Select(g => new
+                {
+                    TeacherId = g.Key,
+                    Salary = g.Sum(c => c.CostAtTime * c.Hour)
+                })
+                .ToList();
+
+            var teacherIds = grouped.Select(r => r.TeacherId).ToList();
+            var teachers = await _context.Teachers
+                //.Where(t => teacherIds.Contains(t.TeacherId))
+                .ToDictionaryAsync(t => t.TeacherId, t => t.Name);
+
+            var total_consumes = await _context.Consumes
+                .Where(c => c.Date.Year == dt.Year && c.Date.Month == dt.Month)
+                .Include(c => c.Recharge)
+                .ToListAsync();
+            decimal total = 0;
+            foreach(var tc in total_consumes)
+            {
+                if (tc.TeacherId != specialTeacherId)
+                    total += (tc.Recharge.RechargePrice - tc.CostAtTime) * tc.Hour;
+                else
+                    total += tc.Recharge.RechargePrice * tc.Hour;
+            }
+
+            var result = grouped.Select(r => new SalaryDto
+            {
+                TeacherName = teachers.GetValueOrDefault(r.TeacherId),
+                Salary = r.Salary
+            }).ToList();
+
+            if (total != 0)
+            {
+                result.Add(new SalaryDto
+                {
+                    TeacherName = teachers.GetValueOrDefault(specialTeacherId),
+                    Salary = total
+                });
+            }
+
+            return result;
+        }
     }
 }

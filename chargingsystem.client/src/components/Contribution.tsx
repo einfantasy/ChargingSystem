@@ -107,7 +107,7 @@ const MONTH_LABEL_CLASS = [
 // Mobile container
 const MOBILE_CONTAINER_CLASS = [
     'flex flex-col min-w-fit lg:hidden',
-    'max-h-[calc(56dvh-100px)] overflow-y-auto pr-3',
+    'max-h-[calc(40dvh-100px)] overflow-y-auto pr-3',
 ].join(' ');
 
 // Mobile month label column

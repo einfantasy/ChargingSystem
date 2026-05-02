@@ -18,5 +18,8 @@ namespace ChargingSystem.Server
         public DateTime Date { get; set; }
 
         public decimal CostAtTime { get; set; }
+
+        [ForeignKey("RechargeId")]
+        public Recharge Recharge { get; set; }
     }
 }

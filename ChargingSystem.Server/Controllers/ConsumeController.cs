@@ -65,5 +65,16 @@ namespace ChargingSystem.Server
             var allData = await _service.GetContribution(queryYear);
             return Ok(allData);
         }
+
+        [Authorize]
+        [HttpGet("query_salary")]
+        public async Task<IActionResult> GetSalary([FromQuery] string queryYear, [FromQuery] string queryMonth)
+        {
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            var authLevelStr = User.FindFirstValue("AuthLevel");
+            var authLevel = int.TryParse(authLevelStr, out var al) ? al : 0;
+            var allData = await _service.GetSalary(queryYear, queryMonth);
+            return Ok(allData);
+        }
     }
 }
