@@ -30,7 +30,10 @@ const DashboardManage: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchDashboard(year, month);
+        const loadData = async () => {
+            await fetchDashboard(year, month);
+        };
+        loadData();
     }, [year, month]);
 
     const handleMonthSelect = (selectedYear: number, selectedMonth: number) => {
