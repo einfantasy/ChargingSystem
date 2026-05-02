@@ -35,12 +35,13 @@ namespace ChargingSystem.Server.Controllers
                 return Unauthorized("密码错误");
             }
 
-            var (tokenString, expiresAt) = _jwtService.GenerateToken(model.Username);
+            var (tokenString, expiresAt) = _jwtService.GenerateToken(model.Username, user.AuthLevel);
 
             return Ok(new
             {
                 token = tokenString,
                 username = model.Username,
+                authLevel = user.AuthLevel,
                 expiresAt = expiresAt,
                 expiresIn = 30 * 60
             });
@@ -95,18 +96,21 @@ namespace ChargingSystem.Server.Controllers
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(currentToken);
                 var username = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                var authLevelStr = jwtToken.Claims.FirstOrDefault(c => c.Type == "AuthLevel")?.Value;
+                var authLevel = int.TryParse(authLevelStr, out var al) ? al : 0;
 
                 if (string.IsNullOrEmpty(username))
                 {
                     return Unauthorized("无效的用户信息");
                 }
 
-                var (newToken, expiresAt) = _jwtService.GenerateToken(username);
+                var (newToken, expiresAt) = _jwtService.GenerateToken(username, authLevel);
 
                 return Ok(new
                 {
                     token = newToken,
                     username = username,
+                    authLevel = authLevel,
                     expiresAt = expiresAt,
                     expiresIn = 30 * 60
                 });

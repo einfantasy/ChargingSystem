@@ -4,6 +4,15 @@ export function isTokenExpired(): boolean {
     return new Date(expiresAt).getTime() < Date.now();
 }
 
+export function getAuthLevel(): number {
+    const level = localStorage.getItem("authLevel");
+    return level ? parseInt(level, 10) : 0;
+}
+
+export function setAuthLevel(level: number): void {
+    localStorage.setItem("authLevel", level.toString());
+}
+
 export function getTimeRemaining(): number {
     const expiresAt = localStorage.getItem("expiresAt");
     if (!expiresAt) return 0;
@@ -14,6 +23,7 @@ export function getTimeRemaining(): number {
 
 export interface RefreshResponse {
     token: string;
+    authLevel?: number;
     expiresAt: string;
 }
 
@@ -30,6 +40,9 @@ export async function refreshToken(): Promise<{ success: boolean; data?: Refresh
             const data = await response.json();
             localStorage.setItem("token", data.token);
             localStorage.setItem("expiresAt", data.expiresAt);
+            if (data.authLevel !== undefined) {
+                setAuthLevel(data.authLevel);
+            }
             return { success: true, data };
         }
         return { success: false };

@@ -20,7 +20,7 @@ public class JwtService
         _expirationMinutes = int.Parse(configuration["JwtSettings:ExpirationMinutes"]!);
     }
 
-    public (string token, DateTime expiresAt) GenerateToken(string username)
+    public (string token, DateTime expiresAt) GenerateToken(string username, int authLevel = 0)
     {
         var expirationTime = DateTime.UtcNow.AddMinutes(_expirationMinutes);
 
@@ -29,7 +29,8 @@ public class JwtService
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, username)
+            new Claim(ClaimTypes.Name, username),
+            new Claim("AuthLevel", authLevel.ToString())
         };
 
         var token = new JwtSecurityToken(

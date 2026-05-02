@@ -1,5 +1,6 @@
 import React, { useState, type SyntheticEvent } from 'react';
 import type { User } from './types';
+import { setAuthLevel } from './utils/auth';
 
 interface LoginProps {
     onLoginSuccess: (user: User) => void;
@@ -26,6 +27,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("expiresAt", data.expiresAt);
+                setAuthLevel(data.authLevel ?? 0);
 
                 onLoginSuccess(data);
             } else {

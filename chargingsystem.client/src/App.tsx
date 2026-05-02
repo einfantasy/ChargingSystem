@@ -43,6 +43,7 @@ function App() {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         localStorage.removeItem('expiresAt');
+        localStorage.removeItem('authLevel');
     };
 
     if (isChecking) return <div>正在加载应用...</div>;

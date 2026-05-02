@@ -62,7 +62,8 @@ namespace ChargingSystem.Server
             {
                 Id = Guid.NewGuid(),
                 Name = "admin",
-                Password = _passwordService.HashPassword("admin123")
+                Password = _passwordService.HashPassword("admin123"),
+                AuthLevel = 0
             };
 
             _context.Users.Add(user);

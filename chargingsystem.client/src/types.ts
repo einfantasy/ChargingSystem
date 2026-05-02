@@ -4,6 +4,7 @@
 export interface User {
     username: string;
     token: string;
+    authLevel?: number;
     // 你可以根据后端 API 的实际返回增加字段
     email?: string; // 问号表示该字段是可选的
     expiresAt: string;// ISO 字符串日期

@@ -18,10 +18,10 @@ import {
     Key,
     X
 } from 'lucide-react';
-import { isTokenExpired, checkTokenStatus, refreshToken } from './utils/auth';
+import { isTokenExpired, checkTokenStatus, refreshToken, getAuthLevel } from './utils/auth';
 
 interface HomeProps {
-    user: { username: string };
+    user: { username: string; authLevel?: number };
     onLogout: () => void;
 }
 
@@ -43,6 +43,7 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     // --- 2. 业务数据状态 ---
     const [students, setStudents] = useState<Student[]>([]);
     const [teachers, setTeachers] = useState<Teacher[]>([]);
+    const [authLevel] = useState<number>(user.authLevel ?? getAuthLevel());
 
     // --- 3. API 请求逻辑 ---
     const fetchStudents = async () => {
@@ -168,12 +169,16 @@ export const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     }, [onLogout]);
 
     // --- 6. 配置项 ---
-    const menuItems = [
-        { key: "dashboard", label: "首页", icon: <LayoutDashboard size={22} /> },
-        { key: "students", label: "学生管理", icon: <Users size={22} /> },
-        { key: "teachers", label: "教师管理", icon: <UserSquare2 size={22} /> },
-        { key: "consume", label: "课时管理", icon: <Clock size={22} /> },
-    ];
+    const menuItems = authLevel === 0
+        ? [
+            { key: "dashboard", label: "首页", icon: <LayoutDashboard size={22} /> },
+            { key: "students", label: "学生管理", icon: <Users size={22} /> },
+            { key: "teachers", label: "教师管理", icon: <UserSquare2 size={22} /> },
+            { key: "consume", label: "课时管理", icon: <Clock size={22} /> },
+          ]
+        : [
+            { key: "dashboard", label: "首页", icon: <LayoutDashboard size={22} /> },
+          ];
 
     return (
         <div className="text-white">
