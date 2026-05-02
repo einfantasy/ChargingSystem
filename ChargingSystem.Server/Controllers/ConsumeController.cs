@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ChargingSystem.Server
 {
@@ -8,10 +9,12 @@ namespace ChargingSystem.Server
     public class ConsumeController : ControllerBase
     {
         private readonly ConsumeService _service;
+        private readonly UserService _userService;
 
-        public ConsumeController(ConsumeService service)
+        public ConsumeController(ConsumeService service, UserService userService)
         {
             _service = service;
+            _userService = userService;
         }
 
         [Authorize]
@@ -45,8 +48,22 @@ namespace ChargingSystem.Server
         [HttpGet("query_contribution")]
         public async Task<IActionResult> GetContribution([FromQuery] string queryYear)
         {
-            var data = await _service.GetContribution(queryYear);
-            return Ok(data);
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            var authLevelStr = User.FindFirstValue("AuthLevel");
+            var authLevel = int.TryParse(authLevelStr, out var al) ? al : 0;
+
+            if (authLevel != 0 && username != null)
+            {
+                var user = await _userService.GetUsersByName(username);
+                if (user?.TeacherId.HasValue == true)
+                {
+                    var data = await _service.GetContribution(queryYear, user.TeacherId.Value);
+                    return Ok(data);
+                }
+            }
+
+            var allData = await _service.GetContribution(queryYear);
+            return Ok(allData);
         }
     }
 }

@@ -111,5 +111,21 @@ namespace ChargingSystem.Server
 
             return result;
         }
+
+        public async Task<List<ContributiontDto>> GetContribution(string queryYear, Guid teacherId)
+        {
+            var result = await _context.Consumes
+                .Where(c => c.Date.Year == int.Parse(queryYear) && c.TeacherId == teacherId)          // 筛选指定年份和teacherId
+                .GroupBy(c => c.Date)                      // 按日期分组
+                .Select(g => new ContributiontDto          // 投影到 DTO 类
+                {
+                    Date = g.Key,
+                    Hour = g.Sum(c => c.Hour)              // 计算当天总课时
+                })
+                .OrderBy(x => x.Date)                      // 按日期升序排列
+                .ToListAsync();                            // 异步执行并返回 List
+
+            return result;
+        }
     }
 }
