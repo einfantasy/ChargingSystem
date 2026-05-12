@@ -18,16 +18,14 @@ const CELL_CONTRIBUTION_BRIGHT_COLOR = '#77FF63';
 const CELL_EMPTY_COLOR = 'transparent';
 
 // Cell sizes (Tailwind classes)
-const DESKTOP_CELL_SIZE = 'w-3 h-3';
-const MOBILE_CELL_SIZE = 'w-4 h-4';
+const CELL_SIZE = 'w-[9px] h-[9px] lg:w-3 lg:h-3';
 const CELL_BORDER_RADIUS = 'rounded-sm';
 
 // Gap spacing (Tailwind classes)
-const DESKTOP_GAP = 'gap-1';
-const MOBILE_GAP = 'gap-[5px]';
+const CELL_GAP = 'gap-[2px] lg:gap-1';
 
 // Font sizes (Tailwind classes)
-const LABEL_FONT_SIZE = 'text-[10px]';
+const LABEL_FONT_SIZE = 'text-[7px] lg:text-[10px]';
 const TITLE_FONT_SIZE = 'text-xs lg:text-sm';
 
 // Label text colors
@@ -49,8 +47,8 @@ const CARD_CLASS = [
     'rounded-xl',
     'shadow-lg transition-all duration-300',
     'hover:bg-white/20 hover:shadow-xl',
-    'flex justify-center w-full',
-    'overflow-x-auto lg:overflow-x-auto overflow-y-auto lg:overflow-y-hidden',
+    'w-full',
+    'overflow-x-auto overflow-y-auto lg:overflow-y-hidden',
 ].join(' ');
 
 // Header row
@@ -83,40 +81,18 @@ const SELECT_OPTION_CLASS = 'bg-slate-800';
 
 // Weekday label
 const WEEKDAY_LABEL_CLASS = [
-    'w-10 h-3 flex items-center justify-end',
+    'w-[22px] h-[9px] lg:w-10 lg:h-3 flex items-center justify-end',
     LABEL_FONT_SIZE,
     LABEL_TEXT_COLOR,
     'leading-none',
-].join(' ');
-
-const MOBILE_WEEKDAY_LABEL_CLASS = [
-    MOBILE_CELL_SIZE.replace('h-', 'w-'),
-    LABEL_FONT_SIZE,
-    LABEL_TEXT_COLOR,
-    'leading-4 text-center',
 ].join(' ');
 
 // Month label
 const MONTH_LABEL_CLASS = [
-    DESKTOP_CELL_SIZE.replace('h-', 'w-'),
+    CELL_SIZE.replace('h-', 'w-'),
     LABEL_FONT_SIZE,
     LABEL_TEXT_COLOR,
-    'leading-3 text-center',
-].join(' ');
-
-// Mobile container
-const MOBILE_CONTAINER_CLASS = [
-    'flex flex-col min-w-fit lg:hidden',
-    'max-h-[calc(95dvh-580px)] overflow-y-auto pr-3',
-].join(' ');
-
-// Mobile month label column
-const MOBILE_MONTH_LABEL_CLASS = [
-    'w-4 shrink-0 h-4',
-    'flex items-center justify-center',
-    LABEL_FONT_SIZE,
-    LABEL_TEXT_COLOR,
-    'leading-none',
+    'leading-3 lg:leading-none text-center',
 ].join(' ');
 
 /* ── Types ────────────────────────────────────────────── */
@@ -155,7 +131,7 @@ export default function Contribution({ onMonthSelect }: { onMonthSelect?: (year:
             });
     }, [year]);
 
-    const { weeks, monthFirstDayCol, monthDay1Row } = useMemo(() => {
+    const { weeks, monthFirstDayCol } = useMemo(() => {
         const firstDay = new Date(year, 0, 1);
 
         const startSunday = new Date(firstDay);
@@ -189,16 +165,7 @@ export default function Contribution({ onMonthSelect }: { onMonthSelect?: (year:
             }
         }
 
-        const day1Row: Record<number, number> = {};
-        for (let row = 0; row < weeks.length; row++) {
-            for (const wd of weeks[row]) {
-                if (wd.day === 1 && wd.month !== null) {
-                    day1Row[wd.month] = row;
-                }
-            }
-        }
-
-        return { weeks, monthFirstDayCol: firstDayCol, monthDay1Row: day1Row };
+        return { weeks, monthFirstDayCol: firstDayCol };
     }, [year]);
 
     const prevYear = () => setYear(y => y - 1);
@@ -256,11 +223,11 @@ export default function Contribution({ onMonthSelect }: { onMonthSelect?: (year:
                     </div>
                 </div>
 
-                {/* ── Desktop View ──────────────────────────────── */}
-                <div className="flex min-w-fit hidden lg:flex">
+                {/* ── Contribution Grid ──────────────────────────── */}
+                <div className="flex min-w-fit">
                     {/* Weekday labels */}
-                    <div className={`flex flex-col ${DESKTOP_GAP} mr-1 shrink-0`}>
-                        <div className="h-3" />
+                    <div className={`flex flex-col ${CELL_GAP} mr-1 shrink-0`}>
+                        <div className="h-[9px] lg:h-3" />
                         {WEEKDAYS.map((d, i) => (
                             <div key={i} className={WEEKDAY_LABEL_CLASS}>{d}</div>
                         ))}
@@ -268,12 +235,12 @@ export default function Contribution({ onMonthSelect }: { onMonthSelect?: (year:
 
                     <div className="flex flex-col">
                         {/* Month labels */}
-                        <div className={`flex ${DESKTOP_GAP} h-3 mb-1`}>
+                        <div className={`flex ${CELL_GAP} h-[9px] lg:h-3 mb-1`}>
                             {weeks.map((week, col) => {
                                 const firstDayEntry = week.find(wd => wd.day === 1);
-                                if (!firstDayEntry) return <div key={col} className="w-3" />;
+                                if (!firstDayEntry) return <div key={col} className="w-[9px] lg:w-3" />;
                                 const month = firstDayEntry.month!;
-                                if (monthFirstDayCol[month] !== col) return <div key={col} className="w-3" />;
+                                if (monthFirstDayCol[month] !== col) return <div key={col} className="w-[9px] lg:w-3" />;
 
                                 return (
                                     <button
@@ -288,44 +255,13 @@ export default function Contribution({ onMonthSelect }: { onMonthSelect?: (year:
                         </div>
 
                         {/* Grid */}
-                        <div className={`flex ${DESKTOP_GAP}`}>
+                        <div className={`flex ${CELL_GAP}`}>
                             {weeks.map((week, col) => (
-                                <div key={col} className={`flex flex-col ${DESKTOP_GAP}`}>
-                                    {week.map((wd, r) => renderCell(wd, r, DESKTOP_CELL_SIZE))}
+                                <div key={col} className={`flex flex-col ${CELL_GAP}`}>
+                                    {week.map((wd, r) => renderCell(wd, r, CELL_SIZE))}
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </div>
-
-                {/* ── Mobile View ───────────────────────────────── */}
-                <div className={MOBILE_CONTAINER_CLASS}>
-                    <div className={`flex flex-col ${MOBILE_GAP}`}>
-                        {/* Weekday labels */}
-                        <div className={`flex ${MOBILE_GAP}`}>
-                            <div className="w-4 shrink-0" />
-                            {WEEKDAYS.map((d, i) => (
-                                <div key={i} className={MOBILE_WEEKDAY_LABEL_CLASS}>{d}</div>
-                            ))}
-                        </div>
-
-                        {/* Grid rows */}
-                        {weeks.map((week, row) => {
-                            const day1Entry = week.find(wd => wd.day === 1 && wd.month !== null);
-                            const showMonth = day1Entry && monthDay1Row[day1Entry.month!] === row;
-
-                            return (
-                                <div key={row} className={`flex items-center ${MOBILE_GAP}`}>
-                                    <button
-                                        className={`${MOBILE_MONTH_LABEL_CLASS} ${showMonth ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
-                                        onClick={() => showMonth && day1Entry && onMonthSelect?.(year, day1Entry.month! + 1)}
-                                    >
-                                        {showMonth ? MONTH_NAMES[day1Entry.month!] : ''}
-                                    </button>
-                                    {week.map((wd, col) => renderCell(wd, col, MOBILE_CELL_SIZE))}
-                                </div>
-                            );
-                        })}
                     </div>
                 </div>
 
